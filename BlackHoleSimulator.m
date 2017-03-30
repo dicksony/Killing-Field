@@ -1,3 +1,4 @@
+
 function varargout = BlackHoleSimulator(varargin)
 % BLACKHOLESIMULATOR MATLAB code for BlackHoleSimulator.fig
 %      BLACKHOLESIMULATOR, by itself, creates a new BLACKHOLESIMULATOR or raises the existing
@@ -54,6 +55,14 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for BlackHoleSimulator
 handles.output = hObject;
+handles.isMassive = 0;
+handles.isAnimated = 0;
+handles.angularMomentum = 0;
+handles.blackHoleMass = 0;
+handles.blackHoleType = 0;
+handles.particleIndex = 0; % keeps track of the total number of particles in existence
+handles.plotRadialDistance = 0;
+handles.plotPotentialEnergy = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -101,6 +110,7 @@ function isMassive_Callback(hObject, eventdata, handles)
 % hObject    handle to isMassive (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.isMassive = get(hObject, 'Value');
 
 % Hint: get(hObject,'Value') returns toggle state of isMassive
 
@@ -133,7 +143,10 @@ function sliderRadialDistance_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderRadialDistance (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.plotRadialDistance = get(hObject, 'Value');
+plot(handles.plotRadialDistance, handles.plotPotentialEnergy, 'go');
 
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -155,7 +168,10 @@ function sliderPotentialEnergy_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderPotentialEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.plotPotentialEnergy = get(hObject, 'Value');
+plot(handles.plotRadialDistance , handles.plotPotentialEnergy, 'ro');
 
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -165,6 +181,7 @@ function sliderPotentialEnergy_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to sliderPotentialEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -177,6 +194,7 @@ function isAnimated_Callback(hObject, eventdata, handles)
 % hObject    handle to isAnimated (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.isAnimated = get(hObject, 'Value');
 
 % Hint: get(hObject,'Value') returns toggle state of isAnimated
 
@@ -193,14 +211,17 @@ function btnAddParticle_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+particleIndex = handles.particleIndex;
+handles.particleIndex = particleIndex + 1
 
+guidata(hObject, handles);
 
 % --- Executes on button press in btnClearParticles.
 function btnClearParticles_Callback(hObject, eventdata, handles)
 % hObject    handle to btnClearParticles (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+handles.particleIndex = 0;
 
 % --- Executes on button press in btnAddStableOrbit.
 function btnAddStableOrbit_Callback(hObject, eventdata, handles)
