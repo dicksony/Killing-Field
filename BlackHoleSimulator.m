@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 28-Mar-2017 22:04:37
+% Last Modified by GUIDE v2.5 30-Mar-2017 11:20:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,10 @@ handles.isMassive = 0;
 handles.isAnimated = 0;
 handles.angularMomentum = 0;
 handles.blackHoleMass = 0;
-handles.blackHoleType = 0;
+handles.blackHoleType = 1; % Enumeration
+                           %    Classical Newtonian = 0
+                           %    Schwarzchild = 1
+                           %    Kerr = 2
 handles.particleIndex = 0; % keeps track of the total number of particles in existence
 handles.plotRadialDistance = 0;
 handles.plotPotentialEnergy = 0;
@@ -112,6 +115,7 @@ function isMassive_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.isMassive = get(hObject, 'Value');
 
+guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of isMassive
 
 
@@ -196,6 +200,7 @@ function isAnimated_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.isAnimated = get(hObject, 'Value');
 
+guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of isAnimated
 
 
@@ -222,6 +227,8 @@ function btnClearParticles_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.particleIndex = 0;
+
+guidata(hObject, handles);
 
 % --- Executes on button press in btnAddStableOrbit.
 function btnAddStableOrbit_Callback(hObject, eventdata, handles)
@@ -258,3 +265,36 @@ function AddCircularOrbit_Callback(hObject, eventdata, handles)
 % hObject    handle to AddCircularOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in optClassicalNewtonian.
+function optClassicalNewtonian_Callback(hObject, eventdata, handles)
+% hObject    handle to optClassicalNewtonian (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.blackHoleType = 0;
+
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of optClassicalNewtonian
+
+
+% --- Executes on button press in optSchwarzchild.
+function optSchwarzchild_Callback(hObject, eventdata, handles)
+% hObject    handle to optSchwarzchild (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.blackHoleType = 1;
+
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of optSchwarzchild
+
+
+% --- Executes on button press in optKerr.
+function optKerr_Callback(hObject, eventdata, handles)
+% hObject    handle to optKerr (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.blackHoleType = 2;
+
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of optKerr
