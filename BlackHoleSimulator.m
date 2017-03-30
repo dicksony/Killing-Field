@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 30-Mar-2017 11:20:18
+% Last Modified by GUIDE v2.5 30-Mar-2017 11:46:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -216,8 +216,7 @@ function btnAddParticle_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-particleIndex = handles.particleIndex;
-handles.particleIndex = particleIndex + 1
+handles.particleIndex = handles.particleIndex + 1
 
 guidata(hObject, handles);
 
@@ -298,3 +297,11 @@ handles.blackHoleType = 2;
 
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of optKerr
+
+
+% --- Executes on button press in btnDebug.
+function btnDebug_Callback(hObject, eventdata, handles)
+% hObject    handle to btnDebug (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles
