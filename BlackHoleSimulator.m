@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 30-Mar-2017 11:46:40
+% Last Modified by GUIDE v2.5 30-Mar-2017 14:03:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,9 +63,24 @@ handles.blackHoleType = 1; % Enumeration
                            %    Classical Newtonian = 0
                            %    Schwarzchild = 1
                            %    Kerr = 2
-handles.particleIndex = 0; % keeps track of the total number of particles in existence
+handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
 handles.plotPotentialEnergy = 0;
+%store values in particleMatrix for each particle:
+%in order: mass, black hole type, black hole mass, angular momentum, plot
+%flag
+handles.particleMatrix = zeros(6, 5);
+handles.particleMatrix(1,2) = 1;
+handles.particleMatrix(1,5) = 1;
+handles.data = cell(6,5);
+handles.data(:) = {''};
+handles.data(:,1) = {'no'};
+handles.data(2:6,5) = {'no'};
+handles.data(1,5) = {'yes'};
+handles.data(:, 3:4) = {'0'};
+handles.data(1, 2) = {'Schwarzschild'};
+handles.data(2:6, 2) = {'Newtonian'};
+set(handles.listOfParticles,'Data',handles.data);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -83,41 +98,6 @@ function varargout = BlackHoleSimulator_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
-
-
-% --- Executes on selection change in listParticles.
-function listParticles_Callback(hObject, eventdata, handles)
-% hObject    handle to listParticles (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns listParticles contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from listParticles
-
-
-% --- Executes during object creation, after setting all properties.
-function listParticles_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listParticles (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in isMassive.
-function isMassive_Callback(hObject, eventdata, handles)
-% hObject    handle to isMassive (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.isMassive = get(hObject, 'Value');
-
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of isMassive
-
 
 
 function txtAngularMomentum_Callback(hObject, eventdata, handles)
@@ -216,22 +196,22 @@ function btnAddParticle_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.particleIndex = handles.particleIndex + 1
+
+
 
 guidata(hObject, handles);
 
-% --- Executes on button press in btnClearParticles.
-function btnClearParticles_Callback(hObject, eventdata, handles)
-% hObject    handle to btnClearParticles (see GCBO)
+% --- Executes on button press in btnRemoveParticle.
+function btnRemoveParticle_Callback(hObject, eventdata, handles)
+% hObject    handle to btnRemoveParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.particleIndex = 0;
 
 guidata(hObject, handles);
 
-% --- Executes on button press in btnAddStableOrbit.
-function btnAddStableOrbit_Callback(hObject, eventdata, handles)
-% hObject    handle to btnAddStableOrbit (see GCBO)
+% --- Executes on button press in btnCreateStableOrbit.
+function btnCreateStableOrbit_Callback(hObject, eventdata, handles)
+% hObject    handle to btnCreateStableOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -254,14 +234,14 @@ function txtBlackHoleMass_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+%if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+%    set(hObject,'BackgroundColor','white');
+%end
 
 
-% --- Executes on button press in AddCircularOrbit.
-function AddCircularOrbit_Callback(hObject, eventdata, handles)
-% hObject    handle to AddCircularOrbit (see GCBO)
+% --- Executes on button press in CreateCircularOrbit.
+function CreateCircularOrbit_Callback(hObject, eventdata, handles)
+% hObject    handle to CreateCircularOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -305,3 +285,94 @@ function btnDebug_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles
+
+
+% --- Executes when entered data in editable cell(s) in listOfParticles.
+function listOfParticles_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to listOfParticles (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in particle1.
+function particle1_Callback(hObject, eventdata, handles)
+% hObject    handle to particle1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 1  ;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle1
+
+
+% --- Executes on button press in particle2.
+function particle2_Callback(hObject, eventdata, handles)
+% hObject    handle to particle2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 2;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle2
+
+
+% --- Executes on button press in particle3.
+function particle3_Callback(hObject, eventdata, handles)
+% hObject    handle to particle3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 3;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle3
+
+
+% --- Executes on button press in particle4.
+function particle4_Callback(hObject, eventdata, handles)
+% hObject    handle to particle4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 4 ;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle4
+
+
+% --- Executes on button press in particle5.
+function particle5_Callback(hObject, eventdata, handles)
+% hObject    handle to particle5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 5;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle5
+
+
+% --- Executes on button press in particle6.
+function particle6_Callback(hObject, eventdata, handles)
+% hObject    handle to particle6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.particleIndex = 6;
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of particle6
+
+
+% --- Executes on button press in isMassive.
+function isMassive_Callback(hObject, eventdata, handles)
+% hObject    handle to isMassive (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.massData = {'no'};
+handles.isMassive = get(hObject, 'Value');
+handles.particleMatrix(handles.particleIndex, 1) = handles.isMassive;
+if handles.isMassive == 1
+    handles.massData = {'yes'};
+else
+    handles.massData = {'no'};
+end
+handles.data(handles.particleIndex, 1) = handles.massData
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of isMassive
