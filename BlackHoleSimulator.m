@@ -58,6 +58,10 @@ handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
 handles.angularMomentum = 0;
+handles.CIRCULAR_ORBIT_POTENTIAL = 9;
+handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
+handles.STABLE_ORBIT_POTENTIAL = 4;
+handles.STABLE_ORBIT_RADIAL_DISTANCE = 5;
 handles.blackHoleMass = 0;
 handles.blackHoleType = 1; % Enumeration
                            %    Classical Newtonian = 0
@@ -68,16 +72,17 @@ handles.plotRadialDistance = 0;
 handles.plotPotentialEnergy = 0;
 %store values in particleMatrix for each particle:
 %in order: mass, black hole type, black hole mass, angular momentum, plot
-%flag
-handles.particleMatrix = zeros(6, 5);
+%flag, potential, radial distance
+handles.particleMatrix = zeros(6, 7);
 handles.particleMatrix(1,2) = 1;
 handles.particleMatrix(1,5) = 1;
-handles.data = cell(6,5);
+handles.data = cell(6,7);
 handles.data(:) = {''};
 handles.data(:,1) = {'no'};
 handles.data(2:6,5) = {'no'};
 handles.data(1,5) = {'yes'};
 handles.data(:, 3:4) = {'0'};
+handles.data(:, 6:7) = {'0'};
 handles.data(1, 2) = {'Schwarzschild'};
 handles.data(2:6, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data);
@@ -107,7 +112,11 @@ function txtAngularMomentum_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of txtAngularMomentum as text
 %        str2double(get(hObject,'String')) returns contents of txtAngularMomentum as a double
-
+handles.angularMomentum = str2double(get(hObject,'String'));
+handles.particleMatrix(handles.particleIndex, 4) = handles.angularMomentum ;
+handles.data(handles.particleIndex, 4) = {handles.angularMomentum};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function txtAngularMomentum_CreateFcn(hObject, eventdata, handles)
@@ -129,7 +138,9 @@ function sliderRadialDistance_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.plotRadialDistance = get(hObject, 'Value');
 plot(handles.plotRadialDistance, handles.plotPotentialEnergy, 'go');
-
+handles.particleMatrix(handles.particleIndex, 7) = handles.plotRadialDistance ;
+handles.data(handles.particleIndex, 7) = {handles.plotRadialDistance};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
@@ -147,6 +158,7 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 
 
+
 % --- Executes on slider movement.
 function sliderPotentialEnergy_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderPotentialEnergy (see GCBO)
@@ -154,7 +166,9 @@ function sliderPotentialEnergy_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.plotPotentialEnergy = get(hObject, 'Value');
 plot(handles.plotRadialDistance , handles.plotPotentialEnergy, 'ro');
-
+handles.particleMatrix(handles.particleIndex, 6) = handles.plotPotentialEnergy ;
+handles.data(handles.particleIndex, 6) = {handles.plotPotentialEnergy};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
@@ -189,6 +203,11 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRunSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+if handles.isAnimated == 1 
+    plot()
+else
+    plot()
+end    
 
 
 % --- Executes on button press in btnAddParticle.
@@ -196,9 +215,9 @@ function btnAddParticle_Callback(hObject, eventdata, handles)
 % hObject    handle to btnAddParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.data(handles.particleIndex, 5) = {'yes'};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
 % --- Executes on button press in btnRemoveParticle.
@@ -206,7 +225,9 @@ function btnRemoveParticle_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRemoveParticle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+handles.particleMatrix(handles.particleIndex, 5) = 0;
+handles.data(handles.particleIndex, 5) = {'no'};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
 % --- Executes on button press in btnCreateStableOrbit.
@@ -214,7 +235,17 @@ function btnCreateStableOrbit_Callback(hObject, eventdata, handles)
 % hObject    handle to btnCreateStableOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.blackHoleMass = handles.particleMatrix(handles.particleIndex, 3);
+handles.angularMomentum = handles.particleMatrix(handles.particleIndex, 4);
+handles.STABLE_ORBIT_RADIAL_DISTANCE = handles.angularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
+handles.STABLE_ORBIT_POTENTIAL= handles.angularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
 
+handles.particleMatrix(handles.particleIndex, 6) = handles.STABLE_ORBIT_POTENTIAL ;
+handles.data(handles.particleIndex, 6) = {handles.STABLE_ORBIT_POTENTIAL};
+handles.particleMatrix(handles.particleIndex, 7) = handles.STABLE_ORBIT_RADIAL_DISTANCE ;
+handles.data(handles.particleIndex, 7) = {handles.STABLE_ORBIT_RADIAL_DISTANCE};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
 
 function txtBlackHoleMass_Callback(hObject, eventdata, handles)
@@ -224,7 +255,11 @@ function txtBlackHoleMass_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of txtBlackHoleMass as text
 %        str2double(get(hObject,'String')) returns contents of txtBlackHoleMass as a double
-
+handles.blackHoleMass = str2double(get(hObject,'String'));
+handles.particleMatrix(handles.particleIndex, 3) = handles.blackHoleMass ;
+handles.data(handles.particleIndex, 3) = {handles.blackHoleMass};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function txtBlackHoleMass_CreateFcn(hObject, eventdata, handles)
@@ -244,6 +279,17 @@ function CreateCircularOrbit_Callback(hObject, eventdata, handles)
 % hObject    handle to CreateCircularOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.blackHoleMass = particleMatrix(handles.particleIndex, 3);
+handles.angularMomentum = particleMatrix(handles.particleIndex, 4);
+handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = handles.angularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
+handles.CIRCULAR_ORBIT_POTENTIAL= handles.angularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
+
+handles.particleMatrix(handles.particleIndex, 6) = handles.CIRCULAR_ORBIT_POTENTIAL ;
+handles.data(handles.particleIndex, 6) = {handles.CIRCULAR_ORBIT_POTENTIAL};
+handles.particleMatrix(handles.particleIndex, 7) = handles.CIRCULAR_ORBIT_RADIAL_DISTANCE ;
+handles.data(handles.particleIndex, 7) = {handles.CIRCULAR_ORBIT_RADIAL_DISTANCE};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
 
 % --- Executes on button press in optClassicalNewtonian.
@@ -252,7 +298,9 @@ function optClassicalNewtonian_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.blackHoleType = 0;
-
+handles.particleMatrix(handles.particleIndex, 2) = 0;
+handles.data(handles.particleIndex, 2) = {'Newtonian'};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of optClassicalNewtonian
 
@@ -263,7 +311,9 @@ function optSchwarzchild_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.blackHoleType = 1;
-
+handles.particleMatrix(handles.particleIndex, 2) = 1;
+handles.data(handles.particleIndex, 2) = {'Schwarzchild'};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of optSchwarzchild
 
@@ -274,7 +324,9 @@ function optKerr_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.blackHoleType = 2;
-
+handles.particleMatrix(handles.particleIndex, 2) = 2;
+handles.data(handles.particleIndex, 2) = {'Kerr'};
+set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of optKerr
 
@@ -285,18 +337,6 @@ function btnDebug_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles
-
-
-% --- Executes when entered data in editable cell(s) in listOfParticles.
-function listOfParticles_CellEditCallback(hObject, eventdata, handles)
-% hObject    handle to listOfParticles (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
-%	Indices: row and column indices of the cell(s) edited
-%	PreviousData: previous data for the cell(s) edited
-%	EditData: string(s) entered by the user
-%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
-%	Error: error string when failed to convert EditData to appropriate value for Data
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in particle1.
