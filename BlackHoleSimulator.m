@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 09:28:28
+% Last Modified by GUIDE v2.5 06-Apr-2017 11:27:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,7 +58,7 @@ handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
 handles.particleAngularMomentum = 0;
-handles.BHAngularMomentum = 0;
+handles.BHangularMomentum = 0;
 handles.CIRCULAR_ORBIT_POTENTIAL = 9;
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
 handles.STABLE_ORBIT_POTENTIAL = 4;
@@ -90,6 +90,7 @@ set(handles.listOfParticles,'Data',handles.data);
 
 % Update handles structure
 guidata(hObject, handles);
+updateEnergyPlot(handles);
 
 % UIWAIT makes BlackHoleSimulator wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -137,10 +138,18 @@ function sliderRadialDistance_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderRadialDistance (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+updateEnergyPlot(handles);
+
 handles.plotRadialDistance = get(hObject, 'Value');
+minPot = getPotential(handles, [handles.plotRadialDistance]);
+if handles.plotEnergy < minPot
+    set(handles.sliderEnergy, 'Value', minPot);
+    handles.plotEnergy = minPot;
+end
+
 plot(handles.plotRadialDistance, handles.plotEnergy, 'go');
+hold off
 handles.particleMatrix(handles.particleIndex, 7) = handles.plotRadialDistance ;
-axis([0 1 0 1]);
 
 handles.data(handles.particleIndex, 7) = {handles.plotRadialDistance};
 set(handles.listOfParticles,'Data',handles.data)
@@ -163,13 +172,20 @@ end
 
 
 % --- Executes on slider movement.
-function sliderPotentialEnergy_Callback(hObject, eventdata, handles)
-% hObject    handle to sliderPotentialEnergy (see GCBO)
+function sliderEnergy_Callback(hObject, eventdata, handles)
+% hObject    handle to sliderEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+updateEnergyPlot(handles);
+
+minPot = getPotential(handles, [handles.plotRadialDistance]);
+if get(hObject, 'Value') < minPot
+    set(hObject, 'Value', minPot);
+end
 handles.plotEnergy = get(hObject, 'Value');
+
 plot(handles.plotRadialDistance , handles.plotEnergy, 'ro');
-axis([0 1 0 1]); % [xmin xmax ymin ymax]
+hold off;
 
 handles.particleMatrix(handles.particleIndex, 6) = handles.plotEnergy ;
 handles.data(handles.particleIndex, 6) = {handles.plotEnergy};
@@ -180,8 +196,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function sliderPotentialEnergy_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderPotentialEnergy (see GCBO)
+function sliderEnergy_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -446,26 +462,52 @@ guidata(hObject, handles);
 % run whenever fields are changed, bh type is changed
 % Kerr case: run when slider moved, bhAngMom changed, isMassive changed
 function updateEnergyPlot(handles)
-    z = findMaxMins(handles)
-    if min(z) == 0 
-        radDist = linspace(0.1, max(z)*1.5, 1000);
-    else
-        radDist = linspace(min(z)*.5, max(z)*1.5, 1000);
+    numPoints = 1000;
+    
+    z = findMaxMins(handles);
+    
+    radDist = linspace(min(z)/2, max(z)*10, numPoints);
+    rmin = radDist(1);
+    rmax = radDist(numPoints);
+    
+    sliderRad = get(handles.sliderRadialDistance, 'Value');
+    set(handles.sliderRadialDistance, 'min', rmin);
+    set(handles.sliderRadialDistance, 'max', rmax);
+    if sliderRad < rmin || sliderRad > rmax
+        set(handles.sliderRadialDistance, 'Value', rmax);
     end
     
     Ueff = getPotential(handles, radDist);
+    Emin = min(Ueff)-.1;
+    Emax = max(Ueff)*1.2;
+    sliderE = get(handles.sliderEnergy, 'Value');
+    set(handles.sliderEnergy, 'min', Emin);
+    set(handles.sliderEnergy, 'max', Emax);
+    if sliderE < Emin || sliderE > Emax
+        set(handles.sliderEnergy, 'Value', Emax);
+    end
     
     hold off;
     plot(radDist, Ueff, '-b');
+    xlim([rmin, rmax]);
+    ylim([Emin, Emax]);
+    hold on;
 
 % finds potential energy as a function of parameter r, the radial distance
 function pot = getPotential(handles, r)
-    type = handles.blackHoleType;
-    m = handles.blackHoleMass;
-    J = handles.BHangularMomentum;
-    L = handles.particleAngularMomentum;
-    E = handles.plotEnergy;
-    K = handles.isMassive;
+%     type = handles.blackHoleType;
+%     m = handles.blackHoleMass;
+%     J = handles.BHangularMomentum;
+%     L = handles.particleAngularMomentum;
+%     E = handles.plotEnergy;
+%     K = handles.isMassive;
+
+    type = 0;
+    m = 1;
+    J = 1;
+    L = 1;
+    E = 1;
+    K = 1;
     
     if type == 0
         pot = L^2./(2*m*r.^2) - m./r;
@@ -478,28 +520,33 @@ function pot = getPotential(handles, r)
 % Finds the maximum and/or the minimum of the effective potential
 % depending on the type of black hole and field paramaters
 function z = findMaxMins(handles)
-    type = handles.blackHoleType;
-    m = handles.blackHoleMass;
-    J = handles.BHangularMomentum;
-    L = handles.particleAngularMomentum;
-    E = handles.plotEnergy;
-    K = handles.isMassive;
+%     type = handles.blackHoleType;
+%     m = handles.blackHoleMass;
+%     J = handles.BHangularMomentum;
+%     L = handles.particleAngularMomentum;
+%     E = handles.plotEnergy;
+%     K = handles.isMassive;
+
+    type = 0;
+    m = 1;
+    J = 1;
+    L = 1;
+    E = 1;
+    K = 1;
     
     if type == 0
         z = L^2/m;
     elseif type == 1
         potRoots = roots([m, -L^2, 3*m*L^2]);
         z = [];
-        
         for n = 1:length(potRoots)
-            if imag(potRoots(n))
+            if imag(potRoots(n)) == 0
                 z = [z, potRoots(n)];
             end
         end
-    else type == 2
+    else
         potRoots = roots([K*m, -L^2 - (K - E^2)*(J/m)^2, 3*m*(L-J*E/m)^2]);
         z = [];
-        
         for n = 1:length(potRoots)
             if imag(potRoots(n)) == 0
                 z = [z, potRoots(n)];
@@ -507,4 +554,3 @@ function z = findMaxMins(handles)
         end
     end
     
-%TODO: set slider limits, xlim instead of axis,
