@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 30-Mar-2017 14:03:28
+% Last Modified by GUIDE v2.5 06-Apr-2017 09:28:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,7 +57,8 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
-handles.angularMomentum = 0;
+handles.particleAngularMomentum = 0;
+handles.BHAngularMomentum = 0;
 handles.CIRCULAR_ORBIT_POTENTIAL = 9;
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
 handles.STABLE_ORBIT_POTENTIAL = 4;
@@ -69,7 +70,7 @@ handles.blackHoleType = 1; % Enumeration
                            %    Kerr = 2
 handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
-handles.plotPotentialEnergy = 0;
+handles.plotEnergy = 0;
 %store values in particleMatrix for each particle:
 %in order: mass, black hole type, black hole mass, angular momentum, plot
 %flag, potential, radial distance
@@ -105,22 +106,22 @@ function varargout = BlackHoleSimulator_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-function txtAngularMomentum_Callback(hObject, eventdata, handles)
-% hObject    handle to txtAngularMomentum (see GCBO)
+function txtParticleAngularMomentum_Callback(hObject, eventdata, handles)
+% hObject    handle to txtParticleAngularMomentum (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of txtAngularMomentum as text
-%        str2double(get(hObject,'String')) returns contents of txtAngularMomentum as a double
-handles.angularMomentum = str2double(get(hObject,'String'));
-handles.particleMatrix(handles.particleIndex, 4) = handles.angularMomentum ;
-handles.data(handles.particleIndex, 4) = {handles.angularMomentum};
+% Hints: get(hObject,'String') returns contents of txtParticleAngularMomentum as text
+%        str2double(get(hObject,'String')) returns contents of txtParticleAngularMomentum as a double
+handles.particleAngularMomentum = str2double(get(hObject,'String'));
+handles.particleMatrix(handles.particleIndex, 4) = handles.particleAngularMomentum ;
+handles.data(handles.particleIndex, 4) = {handles.particleAngularMomentum};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
-function txtAngularMomentum_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to txtAngularMomentum (see GCBO)
+function txtParticleAngularMomentum_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to txtParticleAngularMomentum (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -137,8 +138,10 @@ function sliderRadialDistance_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.plotRadialDistance = get(hObject, 'Value');
-plot(handles.plotRadialDistance, handles.plotPotentialEnergy, 'go');
+plot(handles.plotRadialDistance, handles.plotEnergy, 'go');
 handles.particleMatrix(handles.particleIndex, 7) = handles.plotRadialDistance ;
+axis([0 1 0 1]);
+
 handles.data(handles.particleIndex, 7) = {handles.plotRadialDistance};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
@@ -164,10 +167,12 @@ function sliderPotentialEnergy_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderPotentialEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.plotPotentialEnergy = get(hObject, 'Value');
-plot(handles.plotRadialDistance , handles.plotPotentialEnergy, 'ro');
-handles.particleMatrix(handles.particleIndex, 6) = handles.plotPotentialEnergy ;
-handles.data(handles.particleIndex, 6) = {handles.plotPotentialEnergy};
+handles.plotEnergy = get(hObject, 'Value');
+plot(handles.plotRadialDistance , handles.plotEnergy, 'ro');
+axis([0 1 0 1]); % [xmin xmax ymin ymax]
+
+handles.particleMatrix(handles.particleIndex, 6) = handles.plotEnergy ;
+handles.data(handles.particleIndex, 6) = {handles.plotEnergy};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -206,7 +211,7 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 if handles.isAnimated == 1 
     plot()
 else
-    plot()
+    plot()%% can't use plot function
 end    
 
 
@@ -236,9 +241,9 @@ function btnCreateStableOrbit_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.blackHoleMass = handles.particleMatrix(handles.particleIndex, 3);
-handles.angularMomentum = handles.particleMatrix(handles.particleIndex, 4);
-handles.STABLE_ORBIT_RADIAL_DISTANCE = handles.angularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
-handles.STABLE_ORBIT_POTENTIAL= handles.angularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
+handles.particleAngularMomentum = handles.particleMatrix(handles.particleIndex, 4);
+handles.STABLE_ORBIT_RADIAL_DISTANCE = handles.particleAngularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
+handles.STABLE_ORBIT_POTENTIAL= handles.particleAngularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
 
 handles.particleMatrix(handles.particleIndex, 6) = handles.STABLE_ORBIT_POTENTIAL ;
 handles.data(handles.particleIndex, 6) = {handles.STABLE_ORBIT_POTENTIAL};
@@ -273,6 +278,27 @@ function txtBlackHoleMass_CreateFcn(hObject, eventdata, handles)
 %    set(hObject,'BackgroundColor','white');
 %end
 
+function txtBHAngularMomentum_Callback(hObject, eventdata, handles)
+% hObject    handle to txtBHAngularMomentum (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of txtBHAngularMomentum as text
+%        str2double(get(hObject,'String')) returns contents of txtBHAngularMomentum as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function txtBHAngularMomentum_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to txtBHAngularMomentum (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
 
 % --- Executes on button press in CreateCircularOrbit.
 function CreateCircularOrbit_Callback(hObject, eventdata, handles)
@@ -280,9 +306,9 @@ function CreateCircularOrbit_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.blackHoleMass = particleMatrix(handles.particleIndex, 3);
-handles.angularMomentum = particleMatrix(handles.particleIndex, 4);
-handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = handles.angularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
-handles.CIRCULAR_ORBIT_POTENTIAL= handles.angularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
+handles.particleAngularMomentum = particleMatrix(handles.particleIndex, 4);
+handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = handles.particleAngularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
+handles.CIRCULAR_ORBIT_POTENTIAL= handles.particleAngularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
 
 handles.particleMatrix(handles.particleIndex, 6) = handles.CIRCULAR_ORBIT_POTENTIAL ;
 handles.data(handles.particleIndex, 6) = {handles.CIRCULAR_ORBIT_POTENTIAL};
@@ -337,6 +363,7 @@ function btnDebug_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles
+updateEnergyPlot(handles)
 
 
 % --- Executes on button press in particle1.
@@ -415,4 +442,5 @@ end
 handles.data(handles.particleIndex, 1) = handles.massData
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of isMassive
+% Hint: get(yhObject,'Value') returns toggle state of isMassive
+
