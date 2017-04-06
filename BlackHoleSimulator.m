@@ -443,3 +443,68 @@ set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 % Hint: get(yhObject,'Value') returns toggle state of isMassive
 
+% run whenever fields are changed, bh type is changed
+% Kerr case: run when slider moved, bhAngMom changed, isMassive changed
+function updateEnergyPlot(handles)
+    z = findMaxMins(handles)
+    if min(z) == 0 
+        radDist = linspace(0.1, max(z)*1.5, 1000);
+    else
+        radDist = linspace(min(z)*.5, max(z)*1.5, 1000);
+    end
+    
+    Ueff = getPotential(handles, radDist);
+    
+    hold off;
+    plot(radDist, Ueff, '-b');
+
+% finds potential energy as a function of parameter r, the radial distance
+function pot = getPotential(handles, r)
+    type = handles.blackHoleType;
+    m = handles.blackHoleMass;
+    J = handles.BHangularMomentum;
+    L = handles.particleAngularMomentum;
+    E = handles.plotEnergy;
+    K = handles.isMassive;
+    
+    if type == 0
+        pot = L^2./(2*m*r.^2) - m./r;
+    elseif type == 1
+        pot = 1 - 2*m./r + L^2./r.^2 - 2*m*L^2./r.^3;
+    else
+        pot = -K*m./r + L^2./(2*r.^2) + (K - E^2)*(1 + J^2./(2*r.^2)) - m*(L - J*E/m)^2./r.^3;
+    end
+    
+% Finds the maximum and/or the minimum of the effective potential
+% depending on the type of black hole and field paramaters
+function z = findMaxMins(handles)
+    type = handles.blackHoleType;
+    m = handles.blackHoleMass;
+    J = handles.BHangularMomentum;
+    L = handles.particleAngularMomentum;
+    E = handles.plotEnergy;
+    K = handles.isMassive;
+    
+    if type == 0
+        z = L^2/m;
+    elseif type == 1
+        potRoots = roots([m, -L^2, 3*m*L^2]);
+        z = [];
+        
+        for n = 1:length(potRoots)
+            if imag(potRoots(n))
+                z = [z, potRoots(n)];
+            end
+        end
+    else type == 2
+        potRoots = roots([K*m, -L^2 - (K - E^2)*(J/m)^2, 3*m*(L-J*E/m)^2]);
+        z = [];
+        
+        for n = 1:length(potRoots)
+            if imag(potRoots(n)) == 0
+                z = [z, potRoots(n)];
+            end
+        end
+    end
+    
+%TODO: set slider limits, xlim instead of axis,
