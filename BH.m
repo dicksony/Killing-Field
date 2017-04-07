@@ -1,28 +1,33 @@
+
+
 function [pos_r,pos_phi,pos_t] = ...
-    BH(BH_Type,BH_L,BH_M,P_R,P_E,P_L,POSITION_ARRAY_SIZE,d_tau)
+    BH(BH_Type,BH_L,BH_M,P_R,P_E,P_L,P_MASSIVE,POSITION_ARRAY_SIZE,d_tau,...
+    ingoing_flag)
+% BH
+%   Args:
+%   BH_Type: 0/1/2 = Newton/Schwarz/Kerr
+%   BH_L: BH Angular momentum/mass, 0<=BH_L<1, only used in Kerr case
+%   BH_M: BH Mass
+%   P_R: Particle initial radius
+%   P_E: Particle initial energy, dependent on BH Type:
+%     Newtonian: Radial kinetic energy
+%     Schwarz/Kerr: Energy per unit mass at infinity, (P_E^2-1) ~ Kinetic_E
+%   P_L: Particle specific (per unit mass) angular momentum 
+%   P_MASSIVE: 1 for massive particle, 0 for photon
+%   POSITION_ARRAY_SIZE: REquested length of coordinate arrays
+%   d_tau: Requested time step size in proper time (Reflects accuracy)
+%   ingoing_flag: 1 if particle starts infalling or 0 for outgoing
+%
+% NOTE THAT GEOMETRIZED UNITS ARE USED THROUGHOUT (G=1,c=1)
+% Returns empty array for pos_t if invalid parameters chosen
 
-%POSITION_ARRAY_SIZE = 30000;
-%d_tau = 0.01;
-%P_R = 20; %Particle Initial radius
-%P_E = -0.01; %Particle Initial Energy
-%P_L = 12.0; %Particle angular momentum
-%BH_Type = 0; % 0-Newton/1-Scwarz/2-Kerr
-%BH_L = 0; %Black Hole Angular Momentum
-%BH_M = 1; %Black Hole Mass
 
-%%NOTE THAT GEOMETRIZED UNITS ARE USED THROUGHOUT (G=1,c=1)
 %%TODO: Add support for massless particles.
 
-%pos_x = zeros(1,POSITION_ARRAY_SIZE);
-%pos_y = zeros(1,POSITION_ARRAY_SIZE);
 pos_phi = linspace(0,2*pi*3,POSITION_ARRAY_SIZE);
 pos_r = zeros(1,POSITION_ARRAY_SIZE);
 pos_r(1) = P_R;
 pos_t = zeros(1,POSITION_ARRAY_SIZE);
-
-%Whether particle starts infalling or outgoing
-%We are going to leave as 1, as it is more interesting
-ingoing_flag = 1;
 
 if BH_Type == 1
     %%TODO: Account for falling into BH, Currently get imaginary values and
