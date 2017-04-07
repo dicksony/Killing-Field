@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 19:18:56
+% Last Modified by GUIDE v2.5 06-Apr-2017 22:45:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,18 +72,18 @@ handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
 handles.plotEnergy = 1;
 %store values in particleMatrix for each particle:
-%in order: mass, black hole type, black hole mass, angular momentum, plot
-%flag, potential, radial distance
-handles.particleMatrix = zeros(6, 7);
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+handles.particleMatrix = zeros(6, 8);
 handles.particleMatrix(1,2) = 1;
 handles.particleMatrix(1,5) = 1;
-handles.data = cell(6,7);
+handles.data = cell(6, 8);
 handles.data(:) = {''};
 handles.data(:,1) = {'no'};
 handles.data(2:6,5) = {'no'};
 handles.data(1,5) = {'yes'};
 handles.data(:, 3:4) = {'0'};
-handles.data(:, 6:7) = {'0'};
+handles.data(:, 6:8) = {'0'};
 handles.data(1, 2) = {'Schwarzschild'};
 handles.data(2:6, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data);
@@ -227,10 +227,29 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRunSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
 if handles.isAnimated == 1 
+    figure(1)
     plot()
 else
-    plot()%% can't use plot function
+    figure(1)
+    for i = 1:6
+        if handles.particleMatrix(i, 5) == 1
+            [radius, angle, time] = BH(handles.particleMatrix(i, 2), ...
+                                       handles.particleMatrix(i, 8), ...
+                                       handles.particleMatrix(i, 3), ...
+                                       handles.particleMatrix(i, 7), ...
+                                       handles.particleMatrix(i, 6), ...
+                                       handles.particleMatrix(i, 4), ...
+                                       handles.particleMatrix(i, 1), ...
+                                       30000, 0.03, 1);
+            if ~isempty(time)
+                polarplot(angle,radius);%Display data
+                hold on
+            end
+        end
+    end
 end    
 
 
@@ -304,8 +323,11 @@ function txtBHAngularMomentum_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-    handles.BHangularMomentum = str2double(get(hObject,'String'));
-    guidata(hObject, handles);
+handles.BHangularMomentum = str2double(get(hObject,'String'));
+handles.particleMatrix(handles.particleIndex, 8) = handles.BHangularMomentum ;
+handles.data(handles.particleIndex, 8) = {handles.BHangularMomentum};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
     if handles.blackHoleType == 2
         updatePlotEnergy(handles);
