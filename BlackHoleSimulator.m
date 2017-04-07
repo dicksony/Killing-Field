@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 11:27:42
+% Last Modified by GUIDE v2.5 06-Apr-2017 19:30:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,7 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to BlackHoleSimulator (see VARARGIN)
 
 % Choose default command line output for BlackHoleSimulator
+handles.x = magic(5);
 handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
@@ -74,16 +75,16 @@ handles.plotEnergy = 0;
 %store values in particleMatrix for each particle:
 %in order: mass, black hole type, black hole mass, angular momentum, plot
 %flag, potential, radial distance
-handles.particleMatrix = zeros(6, 7);
+handles.particleMatrix = zeros(6, 8);
 handles.particleMatrix(1,2) = 1;
 handles.particleMatrix(1,5) = 1;
-handles.data = cell(6,7);
+handles.data = cell(6,8);
 handles.data(:) = {''};
 handles.data(:,1) = {'no'};
 handles.data(2:6,5) = {'no'};
 handles.data(1,5) = {'yes'};
 handles.data(:, 3:4) = {'0'};
-handles.data(:, 6:7) = {'0'};
+handles.data(:, 6:8) = {'0'};
 handles.data(1, 2) = {'Schwarzschild'};
 handles.data(2:6, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data);
@@ -224,10 +225,13 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRunSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 if handles.isAnimated == 1 
-    plot()
+    figure(1)
+    plot(handles.x)
 else
-    plot()%% can't use plot function
+    figure(1)
+    plot(handles.x)
 end    
 
 
@@ -301,7 +305,11 @@ function txtBHAngularMomentum_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of txtBHAngularMomentum as text
 %        str2double(get(hObject,'String')) returns contents of txtBHAngularMomentum as a double
-
+handles.BHAngularMomentum = str2double(get(hObject,'String'));
+handles.particleMatrix(handles.particleIndex, 8) = handles.particleAngularMomentum ;
+handles.data(handles.particleIndex, 8) = {handles.particleAngularMomentum};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function txtBHAngularMomentum_CreateFcn(hObject, eventdata, handles)
