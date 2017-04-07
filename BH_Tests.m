@@ -1,12 +1,12 @@
 %%Tests for the BH function
 
-R = 10; %Particle Initial radius
-E = 1; %Particle Initial Energy
-L = 1; %Particle angular momentum
-Type = 1; % 0-Newton/1-Scwarz/2-Kerr
+R = 9.606; %Particle Initial radius
+E = sqrt(2*(-0.0214)+1); %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 1; % 0-Newton/1-Schwarz/2-Kerr
 BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
-SIZE = 20000; %Length of returned coordinate arrays
+SIZE = 50000; %Length of returned coordinate arrays
 time_step = 0.03;
 MASSIVE = 1;
 ingoing = 1;
@@ -96,6 +96,20 @@ Type = 1; % 0-Newton/1-Scwarz/2-Kerr
 BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
 SIZE = 20000; %Length of returned coordinate arrays
+time_step = 0.03;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Schwarzchild TRUE BEAUTY DEFINED
+%{
+R = 9.606; %Particle Initial radius
+E = sqrt(2*(-0.0214)+1); %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 1; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = 0; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 50000; %Length of returned coordinate arrays
 time_step = 0.03;
 MASSIVE = 1;
 ingoing = 1;
