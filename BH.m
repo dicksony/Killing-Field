@@ -1,8 +1,3 @@
-%%TODO: FIX THE NEWTONIAN HYPERBOLIC/
-
-function [pos_r,pos_phi,pos_t] = ...
-    BH(BH_Type,BH_L,BH_M,P_R,P_E,P_L,P_MASSIVE,POSITION_ARRAY_SIZE,d_tau,...
-    ingoing_flag)
 % BH
 %   Args:
 %   BH_Type: 0/1/2 = Newton/Schwarz/Kerr
@@ -21,13 +16,18 @@ function [pos_r,pos_phi,pos_t] = ...
 % NOTE THAT GEOMETRIZED UNITS ARE USED THROUGHOUT (G=1,c=1)
 % Returns empty array for pos_t if invalid parameters chosen
 
+%%TODO: FIX THE NEWTONIAN HYPERBOLIC/
+
+function [pos_r,pos_phi,pos_t] = ...
+    BH(BH_Type,BH_L,BH_M,P_R,P_E,P_L,P_MASSIVE,POSITION_ARRAY_SIZE,d_tau,...
+    ingoing_flag)
 
 %%TODO: Add support for massless particles.
 
-pos_phi = linspace(0,2*pi*3,POSITION_ARRAY_SIZE);
 pos_r = zeros(1,POSITION_ARRAY_SIZE);
 pos_r(1) = P_R;
 pos_t = zeros(1,POSITION_ARRAY_SIZE);
+pos_phi = zeros(1,POSITION_ARRAY_SIZE);
 
 if BH_Type == 1
     %%TODO: Account for falling into BH, Currently get imaginary values and
@@ -77,6 +77,16 @@ if BH_Type == 1
                     break
                 end
             end
+        end
+        
+        %If particle is in Event horizon, mess stuff up
+        if pos_r(i) < 2*BH_M
+            pos_r(i:POSITION_ARRAY_SIZE) = ...
+                2*BH_M*rand(1,POSITION_ARRAY_SIZE-i+1);
+            pos_phi(i:POSITION_ARRAY_SIZE) = ...
+                2*pi*rand(1,POSITION_ARRAY_SIZE-i+1);
+            pos_t(i:POSITION_ARRAY_SIZE) = 0;
+            return
         end
     end %End proper time progression loop
 
