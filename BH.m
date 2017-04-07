@@ -38,14 +38,14 @@ end
 if BH_Type == 1
     
     %Check for valid energy/Angular momentum values
-    if (P_E^2 - (1-2*BH_M/pos_r(1))*(1+P_L^2/pos_r(1)^2)) < 0
+    if (P_E^2 - (1-2*BH_M/pos_r(1))*(K+P_L^2/pos_r(1)^2)) < 0
         fprintf('Invalid Energy/Angular Momentum Selection');
         pos_t = [];
         return;
     end
     
     %Find Turning points based on tailored potential
-    potentialPolynom = [(P_E^2-1) 2*BH_M -P_L^2 2*BH_M*P_L^2];
+    potentialPolynom = [(P_E^2-K) 2*BH_M*K -P_L^2 2*BH_M*P_L^2];
     turningRoots = roots(potentialPolynom);
     turningPoints = zeros(1,3);
     for i = 1:length(turningRoots)
@@ -62,10 +62,10 @@ if BH_Type == 1
         %Check if particle is ingoing or outgoing and advance properly
         if ingoing_flag == 1
             pos_r(i) = pos_r(i-1) - d_tau*...
-                (sqrt(P_E^2-(1-2*BH_M/pos_r(i-1))*(1+P_L^2/pos_r(i-1)^2)));
+                (sqrt(P_E^2-(1-2*BH_M/pos_r(i-1))*(K+P_L^2/pos_r(i-1)^2)));
         else
             pos_r(i) = pos_r(i-1) + d_tau*...
-                (sqrt(P_E^2-(1-2*BH_M/pos_r(i-1))*(1+P_L^2/pos_r(i-1)^2)));
+                (sqrt(P_E^2-(1-2*BH_M/pos_r(i-1))*(K+P_L^2/pos_r(i-1)^2)));
         end
         
         %Check if particle crosses turning point & if so maintain current
@@ -96,6 +96,12 @@ if BH_Type == 1
 
     %End of Schwarzchild treatment
 elseif BH_Type == 0
+    
+    if P_MASSIVE == 0
+        pos_phi = linspace(0,pi/4,POSITION_ARRAY_SIZE);
+        pos_r = P_R./cos(pos_phi);
+        return
+    end
     
     %Calculate initial coordinate velocities
     phi_dot = P_L/P_R^2;
