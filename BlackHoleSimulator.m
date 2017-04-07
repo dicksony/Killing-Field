@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 22:45:12
+% Last Modified by GUIDE v2.5 07-Apr-2017 08:45:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,7 +57,7 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
-handles.particleAngularMomentum = 2;
+handles.particleAngularMomentum = 4;
 handles.BHangularMomentum = 0.5;
 handles.CIRCULAR_ORBIT_POTENTIAL = 9;
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
@@ -71,6 +71,7 @@ handles.blackHoleType = 1; % Enumeration
 handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
 handles.plotEnergy = 1;
+handles.energy = 0;
 %store values in particleMatrix for each particle:
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
@@ -87,7 +88,10 @@ handles.data(:, 6:8) = {'0'};
 handles.data(1, 2) = {'Schwarzschild'};
 handles.data(2:6, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data);
-
+handles.plot_cell_labels = cellstr('labels');
+handles.all_labels = ['Particle 1'; 'Particle 2'; 'Particle 3'; 'Particle 4'; 'Particle 5'; 'Particle 6'];
+handles.cell_labels = cellstr(handles.all_labels);
+ 
 % Update handles structure
 guidata(hObject, handles);
 updateEnergyPlot(handles);
@@ -229,18 +233,25 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-if handles.isAnimated == 1 
-    figure(1)
-    plot()
-else
-    figure(1)
+figure(1)
+    handles.plot_cell_labels = cellstr('labels');
     for i = 1:6
         if handles.particleMatrix(i, 5) == 1
+            handles.plot_cell_labels = [handles.plot_cell_labels; handles.cell_labels(i)];
+            if handles.particleMatrix(i, 2) == 1 %if Swarzchild
+                if handles.particleMatrix(i, 1) == 1 %if massive
+                    handles.energy = sqrt(handles.particleMatrix(i, 6)*2 +1);
+                else
+                    handles.energy = sqrt(handles.particleMatrix(i, 6)*2);
+                end
+            else
+                handles.energy = handles.particleMatrix(i, 6);
+            end    
             [radius, angle, time] = BH(handles.particleMatrix(i, 2), ...
                                        handles.particleMatrix(i, 8), ...
                                        handles.particleMatrix(i, 3), ...
                                        handles.particleMatrix(i, 7), ...
-                                       handles.particleMatrix(i, 6), ...
+                                       handles.energy, ...
                                        handles.particleMatrix(i, 4), ...
                                        handles.particleMatrix(i, 1), ...
                                        30000, 0.03, 1);
@@ -249,8 +260,10 @@ else
                 hold on
             end
         end
-    end
-end    
+    end 
+    legend('show')
+    handles.plot_cell_labels = handles.plot_cell_labels(2:length(handles.plot_cell_labels));
+    legend(handles.plot_cell_labels)
 
 
 % --- Executes on button press in btnAddParticle.
@@ -354,24 +367,26 @@ function CreateCircularOrbit_Callback(hObject, eventdata, handles)
 % hObject    handle to CreateCircularOrbit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.blackHoleMass = particleMatrix(handles.particleIndex, 3);
-handles.particleAngularMomentum = particleMatrix(handles.particleIndex, 4);
-handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = handles.particleAngularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
-handles.CIRCULAR_ORBIT_POTENTIAL= handles.particleAngularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
+
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
-particleMatrix(handles.particleIndex, 3)
+handles.particleMatrix(handles.particleIndex, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 2) = 1;
+handles.particleMatrix(handles.particleIndex, 3) = 0.5;
+handles.particleMatrix(handles.particleIndex, 4) = 3;
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
+handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
+handles.particleMatrix(handles.particleIndex, 8) = 46;
 
-handles.particleMatrix(handles.particleIndex, 6) = handles.CIRCULAR_ORBIT_POTENTIAL ;
-handles.data(handles.particleIndex, 6) = {handles.CIRCULAR_ORBIT_POTENTIAL};
-handles.particleMatrix(handles.particleIndex, 7) = handles.CIRCULAR_ORBIT_RADIAL_DISTANCE ;
-handles.data(handles.particleIndex, 7) = {handles.CIRCULAR_ORBIT_RADIAL_DISTANCE};
+handles.data(handles.particleIndex, 1) = {'yes'};
+handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
+handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
+handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
+handles.data(handles.particleIndex, 5) = {'yes'};
+handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
+handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
+handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
