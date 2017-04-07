@@ -238,7 +238,7 @@ figure(1)
     for i = 1:6
         if handles.particleMatrix(i, 5) == 1
             handles.plot_cell_labels = [handles.plot_cell_labels; handles.cell_labels(i)];
-            if handles.particleMatrix(i, 2) == 1 %if Swarzchild
+            if handles.particleMatrix(i, 2) == 1 || handles.particleMatrix(i,2) == 2%if Swarzchild or Kerr
                 if handles.particleMatrix(i, 1) == 1 %if massive
                     handles.energy = sqrt(handles.particleMatrix(i, 6)*2 +1);
                 else
