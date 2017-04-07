@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 07-Apr-2017 08:45:08
+% Last Modified by GUIDE v2.5 07-Apr-2017 10:48:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,10 +74,13 @@ handles.plotEnergy = 1;
 handles.energy = 0;
 %store values in particleMatrix for each particle:
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
-%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-handles.particleMatrix = zeros(6, 8);
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum 
+%9 SIZE(for plotting, not user input)
+handles.particleMatrix = zeros(6, 10);
 handles.particleMatrix(1,2) = 1;
 handles.particleMatrix(1,5) = 1;
+handles.particleMatrix(:,9) = 30000;
+handles.particleMatrix(:,10) = 0.03;
 handles.data = cell(6, 8);
 handles.data(:) = {''};
 handles.data(:,1) = {'no'};
@@ -254,7 +257,8 @@ figure(1)
                                        handles.energy, ...
                                        handles.particleMatrix(i, 4), ...
                                        handles.particleMatrix(i, 1), ...
-                                       30000, 0.03, 1);
+                                       handles.particleMatrix(i, 9), ...
+                                       handles.particleMatrix(i, 10), 1);
             if ~isempty(time)
                 polarplot(angle,radius);%Display data
                 hold on
@@ -283,23 +287,6 @@ function btnRemoveParticle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.particleMatrix(handles.particleIndex, 5) = 0;
 handles.data(handles.particleIndex, 5) = {'no'};
-set(handles.listOfParticles,'Data',handles.data)
-guidata(hObject, handles);
-
-% --- Executes on button press in btnCreateStableOrbit.
-function btnCreateStableOrbit_Callback(hObject, eventdata, handles)
-% hObject    handle to btnCreateStableOrbit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.blackHoleMass = handles.particleMatrix(handles.particleIndex, 3);
-handles.particleAngularMomentum = handles.particleMatrix(handles.particleIndex, 4);
-handles.STABLE_ORBIT_RADIAL_DISTANCE = handles.particleAngularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
-handles.STABLE_ORBIT_POTENTIAL= handles.particleAngularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
-
-handles.particleMatrix(handles.particleIndex, 6) = handles.STABLE_ORBIT_POTENTIAL ;
-handles.data(handles.particleIndex, 6) = {handles.STABLE_ORBIT_POTENTIAL};
-handles.particleMatrix(handles.particleIndex, 7) = handles.STABLE_ORBIT_RADIAL_DISTANCE ;
-handles.data(handles.particleIndex, 7) = {handles.STABLE_ORBIT_RADIAL_DISTANCE};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
@@ -362,9 +349,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in CreateCircularOrbit.
-function CreateCircularOrbit_Callback(hObject, eventdata, handles)
-% hObject    handle to CreateCircularOrbit (see GCBO)
+% --- Executes on button press in DemoOrbit2.
+function DemoOrbit2_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -372,12 +359,14 @@ function CreateCircularOrbit_Callback(hObject, eventdata, handles)
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
 handles.particleMatrix(handles.particleIndex, 1) = 1;
 handles.particleMatrix(handles.particleIndex, 2) = 1;
-handles.particleMatrix(handles.particleIndex, 3) = 0.5;
-handles.particleMatrix(handles.particleIndex, 4) = 3;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = 4.2;
 handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
-handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
-handles.particleMatrix(handles.particleIndex, 8) = 46;
+handles.particleMatrix(handles.particleIndex, 6) = (((1)^2)-1)/2;
+handles.particleMatrix(handles.particleIndex, 7) = 40;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 20000;
+handles.particleMatrix(handles.particleIndex, 10) = 0.03;
 
 handles.data(handles.particleIndex, 1) = {'yes'};
 handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
@@ -614,3 +603,183 @@ function z = findMaxMins(handles)
             end
         end
     end
+
+
+% --- Executes on button press in DemoOrbit3.
+function DemoOrbit3_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+handles.particleMatrix(handles.particleIndex, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 2) = 0;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = 1;
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.particleMatrix(handles.particleIndex, 6) = 1;
+handles.particleMatrix(handles.particleIndex, 7) = 1;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 30000;
+handles.particleMatrix(handles.particleIndex, 10) = 0.01;
+
+handles.data(handles.particleIndex, 1) = {'yes'};
+handles.data(handles.particleIndex, 2) = {'Newtonian'};
+handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
+handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
+handles.data(handles.particleIndex, 5) = {'yes'};
+handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
+handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
+handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
+
+
+% --- Executes on button press in DemoOrbit5.
+function DemoOrbit5_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+handles.particleMatrix(1, 1) = 1;
+handles.particleMatrix(1, 2) = 2;
+handles.particleMatrix(1, 3) = 1;
+handles.particleMatrix(1, 4) = 4;
+handles.particleMatrix(1, 5) = 1;
+handles.particleMatrix(1, 6) = (((1.001)^2)-1)/2;
+handles.particleMatrix(1, 7) = 9.606;
+handles.particleMatrix(1, 8) = 0.05;
+handles.particleMatrix(1, 9) = 7000;
+handles.particleMatrix(1, 10) = 0.08;
+
+handles.data(1, 1) = {'yes'};
+handles.data(1, 2) = {'Kerr'};
+handles.data(1, 3) = {handles.particleMatrix(1, 3)};
+handles.data(1, 4) = {handles.particleMatrix(1, 4)};
+handles.data(1, 5) = {'yes'};
+handles.data(1, 6) = {handles.particleMatrix(1, 6)};
+handles.data(1, 7) = {handles.particleMatrix(1, 7)};
+handles.data(1, 8) = {handles.particleMatrix(1, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+
+handles.particleMatrix(2, 1) = 1;
+handles.particleMatrix(2, 2) = 2;
+handles.particleMatrix(2, 3) = 1;
+handles.particleMatrix(2, 4) = 4;
+handles.particleMatrix(2, 5) = 1;
+handles.particleMatrix(2, 6) = (((1.001)^2)-1)/2;
+handles.particleMatrix(2, 7) = 9.606;
+handles.particleMatrix(2, 8) = -0.05;
+handles.particleMatrix(2, 9) = 7000;
+handles.particleMatrix(2, 10) = 0.08;
+
+handles.data(2, 1) = {'yes'};
+handles.data(2, 2) = {'Kerr'};
+handles.data(2, 3) = {handles.particleMatrix(2, 3)};
+handles.data(2, 4) = {handles.particleMatrix(2, 4)};
+handles.data(2, 5) = {'yes'};
+handles.data(2, 6) = {handles.particleMatrix(2, 6)};
+handles.data(2, 7) = {handles.particleMatrix(2, 7)};
+handles.data(2, 8) = {handles.particleMatrix(2, 8)};
+
+handles.particleMatrix(3, 5) = 0;
+handles.particleMatrix(4, 5) = 0;
+handles.particleMatrix(5, 5) = 0;
+handles.particleMatrix(6, 5) = 0;
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
+
+
+% --- Executes on button press in DemoOrbit4.
+function DemoOrbit4_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+handles.particleMatrix(handles.particleIndex, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 2) = 0;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = sqrt(120);
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.particleMatrix(handles.particleIndex, 6) = 0.55;
+handles.particleMatrix(handles.particleIndex, 7) = 10;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 30000;
+handles.particleMatrix(handles.particleIndex, 10) = 0.01;
+
+handles.data(handles.particleIndex, 1) = {'yes'};
+handles.data(handles.particleIndex, 2) = {'Newtonian'};
+handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
+handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
+handles.data(handles.particleIndex, 5) = {'yes'};
+handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
+handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
+handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
+
+
+% --- Executes on button press in DemoOrbit6.
+function DemoOrbit6_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+handles.particleMatrix(handles.particleIndex, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 2) = 1;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = 4;
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.particleMatrix(handles.particleIndex, 6) = -0.0333;
+handles.particleMatrix(handles.particleIndex, 7) = 8.6001;
+handles.particleMatrix(handles.particleIndex, 8) = 0.5;
+
+handles.data(handles.particleIndex, 1) = {'yes'};
+handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
+handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
+handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
+handles.data(handles.particleIndex, 5) = {'yes'};
+handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
+handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
+handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
+
+
+% --- Executes on button press in DemoOrbit1.
+function DemoOrbit1_Callback(hObject, eventdata, handles)
+% hObject    handle to DemoOrbit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+%9 size 10 timestep
+handles.particleMatrix(handles.particleIndex, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 2) = 1;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = 80;
+handles.particleMatrix(handles.particleIndex, 5) = 1;
+handles.particleMatrix(handles.particleIndex, 6) = (((7)^2)-1)/2;
+handles.particleMatrix(handles.particleIndex, 7) = 50;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 700;
+handles.particleMatrix(handles.particleIndex, 10) = 0.03;
+
+handles.data(handles.particleIndex, 1) = {'yes'};
+handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
+handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
+handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
+handles.data(handles.particleIndex, 5) = {'yes'};
+handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
+handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
+handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+guidata(hObject, handles);
