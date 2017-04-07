@@ -732,26 +732,8 @@ function DemoOrbit6_Callback(hObject, eventdata, handles)
 
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-handles.particleMatrix(handles.particleIndex, 1) = 1;
-handles.particleMatrix(handles.particleIndex, 2) = 1;
-handles.particleMatrix(handles.particleIndex, 3) = 1;
-handles.particleMatrix(handles.particleIndex, 4) = 4;
-handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = -0.0333;
-handles.particleMatrix(handles.particleIndex, 7) = 8.6001;
-handles.particleMatrix(handles.particleIndex, 8) = 0.5;
-
-handles.data(handles.particleIndex, 1) = {'yes'};
-handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
-handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
-handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
-handles.data(handles.particleIndex, 5) = {'yes'};
-handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
-handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
-handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
-set(handles.listOfParticles,'Data',handles.data)
-guidata(hObject, handles);
-
+    figure(1);
+    photonPlot;
 
 % --- Executes on button press in DemoOrbit1.
 function DemoOrbit1_Callback(hObject, eventdata, handles)
