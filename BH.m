@@ -92,18 +92,16 @@ elseif BH_Type == 0
         return;
     end
     
-    r_double_dot = -P_L^2/P_R^3 + BH_M/P_R^2;
-    
     %Circular orbit, muy bueno
-    if r_double_dot == 0
+    if r_dot == 0
         for i=2:POSITION_ARRAY_SIZE
             pos_t(i) = pos_t(i-1)+d_tau;
             pos_phi(i) = pos_phi(i-1) + d_tau*(P_L/P_R^2);
             pos_r(i) = P_R;
         end
         return
-    end %end circular orbit
-    
+    end
+        
     
     %Solve for eccentricity and true anomaly in accordance with Wikipedia
     %Article on Kepler Orbits, wrt Determintation from Initial conditions
@@ -117,42 +115,12 @@ elseif BH_Type == 0
     %%fix later & account for coordinate time progression
     pos_phi = linspace(0,sign(P_L)*2*pi,POSITION_ARRAY_SIZE);
     
-    if eAndTheta(1) < 1 %Elliptic Orbit
-        for i=2:POSITION_ARRAY_SIZE
-            pos_t(i) = pos_t(i-1)+d_tau;
-            pos_phi(i) = pos_phi(i-1) + d_tau*(P_L/pos_r(i-1)^2);
-            pos_r(i) = p./(1+eAndTheta(1).*cos(pos_phi(i)-eAndTheta(2)));
-        end
-        return
-        
-    else %Parabolic or elliptic orbit
-        
-        turningPoint = fsolve(@(y) 2*P_E-P_L^2/y^2+2*BH_M/y, P_R);
-
-        for i=2:POSITION_ARRAY_SIZE
-            pos_t(i) = pos_t(i-1)+d_tau;
-
-            if ingoing_flag == 1
-                pos_r(i) = pos_r(i-1) - d_tau *... 
-                    sqrt(2*P_E-P_L^2/pos_r(i-1)^2+2*BH_M/pos_r(i-1));
-                %If less than turning point, reverse
-                if pos_r(i) < min(0,turningPoint)
-                    pos_r(i) = pos_r(i-1);
-                    ingoing_flag = 0;
-                end
-
-            else %ingoing_flag == 0
-                pos_r(i) = pos_r(i-1) + d_tau *... 
-                    sqrt(2*P_E-P_L^2/pos_r(i-1)^2+2*BH_M/pos_r(i-1));
-            end
-
-        end %Done handling pos_r/t values
-        
-        pos_phi = eAndTheta(2) + acos( 1/eAndTheta(1)* (p./r - 1) );
-            
-    end % end of elliptic orbit handling
-    return
     
+    for i=2:POSITION_ARRAY_SIZE
+        pos_t(i) = pos_t(i-1)+d_tau;
+        pos_phi(i) = pos_phi(i-1) + d_tau*(P_L/pos_r(i-1)^2);
+        pos_r(i) = p./(1+eAndTheta(1).*cos(pos_phi(i)-eAndTheta(2)));
+    end
 elseif BH_Type == 2
     %Stuff
 end
