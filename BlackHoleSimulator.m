@@ -558,7 +558,7 @@ function pot = getPotential(handles, r)
     if type == 0
         pot = K*(L^2./(2*m*r.^2) - m./r);
     elseif type == 1
-        pot = 1 - 2*K*m./r + L^2./r.^2 - 2*m*L^2./r.^3;
+        pot = -K*m./r + L^2./(2*r.^2) - m*L^2./r.^3;
     else
         pot = -K*m./r + L^2./(2*r.^2) + (K - E^2)*(1 + J^2./(m^2*r.^2))/2 - m*(L - J*E/m)^2./r.^3;
     end
@@ -592,4 +592,3 @@ function z = findMaxMins(handles)
             end
         end
     end
-    
