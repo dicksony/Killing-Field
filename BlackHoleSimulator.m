@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 19:30:24
+% Last Modified by GUIDE v2.5 06-Apr-2017 19:18:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,37 +54,36 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to BlackHoleSimulator (see VARARGIN)
 
 % Choose default command line output for BlackHoleSimulator
-handles.x = magic(5);
 handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
-handles.particleAngularMomentum = 0;
-handles.BHangularMomentum = 0;
+handles.particleAngularMomentum = 2;
+handles.BHangularMomentum = 0.5;
 handles.CIRCULAR_ORBIT_POTENTIAL = 9;
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
 handles.STABLE_ORBIT_POTENTIAL = 4;
 handles.STABLE_ORBIT_RADIAL_DISTANCE = 5;
-handles.blackHoleMass = 0;
+handles.blackHoleMass = 1;
 handles.blackHoleType = 1; % Enumeration
                            %    Classical Newtonian = 0
                            %    Schwarzchild = 1
                            %    Kerr = 2
 handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
-handles.plotEnergy = 0;
+handles.plotEnergy = 1;
 %store values in particleMatrix for each particle:
 %in order: mass, black hole type, black hole mass, angular momentum, plot
 %flag, potential, radial distance
-handles.particleMatrix = zeros(6, 8);
+handles.particleMatrix = zeros(6, 7);
 handles.particleMatrix(1,2) = 1;
 handles.particleMatrix(1,5) = 1;
-handles.data = cell(6,8);
+handles.data = cell(6,7);
 handles.data(:) = {''};
 handles.data(:,1) = {'no'};
 handles.data(2:6,5) = {'no'};
 handles.data(1,5) = {'yes'};
 handles.data(:, 3:4) = {'0'};
-handles.data(:, 6:8) = {'0'};
+handles.data(:, 6:7) = {'0'};
 handles.data(1, 2) = {'Schwarzschild'};
 handles.data(2:6, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data);
@@ -121,6 +120,8 @@ handles.data(handles.particleIndex, 4) = {handles.particleAngularMomentum};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
+updateEnergyPlot(handles);
+
 % --- Executes during object creation, after setting all properties.
 function txtParticleAngularMomentum_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to txtParticleAngularMomentum (see GCBO)
@@ -139,8 +140,6 @@ function sliderRadialDistance_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderRadialDistance (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-updateEnergyPlot(handles);
-
 handles.plotRadialDistance = get(hObject, 'Value');
 minPot = getPotential(handles, [handles.plotRadialDistance]);
 if handles.plotEnergy < minPot
@@ -148,13 +147,15 @@ if handles.plotEnergy < minPot
     handles.plotEnergy = minPot;
 end
 
-plot(handles.plotRadialDistance, handles.plotEnergy, 'go');
+plot(handles.plotRadialDistance, handles.plotEnergy, 'ro');
 hold off
 handles.particleMatrix(handles.particleIndex, 7) = handles.plotRadialDistance ;
 
 handles.data(handles.particleIndex, 7) = {handles.plotRadialDistance};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
+
+updateEnergyPlot(handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -177,8 +178,6 @@ function sliderEnergy_Callback(hObject, eventdata, handles)
 % hObject    handle to sliderEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-updateEnergyPlot(handles);
-
 minPot = getPotential(handles, [handles.plotRadialDistance]);
 if get(hObject, 'Value') < minPot
     set(hObject, 'Value', minPot);
@@ -191,7 +190,11 @@ hold off;
 handles.particleMatrix(handles.particleIndex, 6) = handles.plotEnergy ;
 handles.data(handles.particleIndex, 6) = {handles.plotEnergy};
 set(handles.listOfParticles,'Data',handles.data)
-guidata(hObject, handles);
+guidata(hObject,handles);
+
+updateEnergyPlot(handles);
+    
+
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -201,7 +204,6 @@ function sliderEnergy_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to sliderEnergy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -225,13 +227,10 @@ function btnRunSimulation_Callback(hObject, eventdata, handles)
 % hObject    handle to btnRunSimulation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 if handles.isAnimated == 1 
-    figure(1)
-    plot(handles.x)
+    plot()
 else
-    figure(1)
-    plot(handles.x)
+    plot()%% can't use plot function
 end    
 
 
@@ -305,13 +304,15 @@ function txtBHAngularMomentum_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+    handles.BHangularMomentum = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+
+    if handles.blackHoleType == 2
+        updatePlotEnergy(handles);
+    end 
 % Hints: get(hObject,'String') returns contents of txtBHAngularMomentum as text
 %        str2double(get(hObject,'String')) returns contents of txtBHAngularMomentum as a double
-handles.BHAngularMomentum = str2double(get(hObject,'String'));
-handles.particleMatrix(handles.particleIndex, 8) = handles.particleAngularMomentum ;
-handles.data(handles.particleIndex, 8) = {handles.particleAngularMomentum};
-set(handles.listOfParticles,'Data',handles.data)
-guidata(hObject, handles);
+
 
 % --- Executes during object creation, after setting all properties.
 function txtBHAngularMomentum_CreateFcn(hObject, eventdata, handles)
@@ -354,6 +355,8 @@ handles.particleMatrix(handles.particleIndex, 2) = 0;
 handles.data(handles.particleIndex, 2) = {'Newtonian'};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
+
+updateEnergyPlot(handles);
 % Hint: get(hObject,'Value') returns toggle state of optClassicalNewtonian
 
 
@@ -367,6 +370,8 @@ handles.particleMatrix(handles.particleIndex, 2) = 1;
 handles.data(handles.particleIndex, 2) = {'Schwarzchild'};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
+
+updateEnergyPlot(handles);
 % Hint: get(hObject,'Value') returns toggle state of optSchwarzchild
 
 
@@ -380,6 +385,8 @@ handles.particleMatrix(handles.particleIndex, 2) = 2;
 handles.data(handles.particleIndex, 2) = {'Kerr'};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
+
+updateEnergyPlot(handles);
 % Hint: get(hObject,'Value') returns toggle state of optKerr
 
 
@@ -464,22 +471,27 @@ if handles.isMassive == 1
 else
     handles.massData = {'no'};
 end
-handles.data(handles.particleIndex, 1) = handles.massData
+handles.data(handles.particleIndex, 1) = handles.massData;
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
+
+updateEnergyPlot(handles);
 % Hint: get(yhObject,'Value') returns toggle state of isMassive
 
-% run whenever fields are changed, bh type is changed
-% Kerr case: run when slider moved, bhAngMom changed, isMassive changed
 function updateEnergyPlot(handles)
-    numPoints = 1000;
+    numPoints = 20000;
     
     z = findMaxMins(handles);
     
-    radDist = linspace(min(z)/2, max(z)*10, numPoints);
-    rmin = radDist(1);
-    rmax = radDist(numPoints);
-    
+    if length(z) ~= 0
+        radDist = linspace(min(z)/2, max(z)*5, numPoints);
+        rmin = radDist(1);
+        rmax = radDist(numPoints);
+    else
+       radDist = linspace(0.1, 10, numPoints);
+       rmin = radDist(1);
+       rmax = radDist(numPoints);
+    end
     sliderRad = get(handles.sliderRadialDistance, 'Value');
     set(handles.sliderRadialDistance, 'min', rmin);
     set(handles.sliderRadialDistance, 'max', rmax);
@@ -490,7 +502,6 @@ function updateEnergyPlot(handles)
     Ueff = getPotential(handles, radDist);
     Emin = min(Ueff)-.1;
     Emax = max(Ueff)*1.2;
-
     if Emax < .1
         Emax = .5;
     end
@@ -499,7 +510,6 @@ function updateEnergyPlot(handles)
     elseif handles.plotEnergy < Emin
         handles.plotEnergy = Emin;
     end
-
     sliderE = get(handles.sliderEnergy, 'Value');
     set(handles.sliderEnergy, 'min', Emin);
     set(handles.sliderEnergy, 'max', Emax);
@@ -507,57 +517,44 @@ function updateEnergyPlot(handles)
         set(handles.sliderEnergy, 'Value', Emax);
     end
     
-    hold off;
+    plot(handles.plotRadialDistance, handles.plotEnergy, 'ro');
+    hold on;
     plot(radDist, Ueff, '-b');
     xlim([rmin, rmax]);
     ylim([Emin, Emax]);
-    hold on;
+    hold off;
 
 % finds potential energy as a function of parameter r, the radial distance
 function pot = getPotential(handles, r)
-%     type = handles.blackHoleType;
-%     m = handles.blackHoleMass;
-%     J = handles.BHangularMomentum;
-%     L = handles.particleAngularMomentum;
-%     E = handles.plotEnergy;
-%     K = handles.isMassive;
-
-    type = 0;
-    m = 1;
-    J = 1;
-    L = 1;
-    E = 1;
-    K = 1;
+    type = handles.blackHoleType;
+    m = handles.blackHoleMass;
+    J = handles.BHangularMomentum;
+    L = handles.particleAngularMomentum;
+    E = handles.plotEnergy;
+    K = handles.isMassive;
     
     if type == 0
-        pot = L^2./(2*m*r.^2) - m./r;
+        pot = K*(L^2./(2*m*r.^2) - m./r);
     elseif type == 1
-        pot = 1 - 2*m./r + L^2./r.^2 - 2*m*L^2./r.^3;
+        pot = 1 - 2*K*m./r + L^2./r.^2 - 2*m*L^2./r.^3;
     else
-        pot = -K*m./r + L^2./(2*r.^2) + (K - E^2)*(1 + J^2./(2*r.^2)) - m*(L - J*E/m)^2./r.^3;
+        pot = -K*m./r + L^2./(2*r.^2) + (K - E^2)*(1 + J^2./(m^2*r.^2))/2 - m*(L - J*E/m)^2./r.^3;
     end
     
 % Finds the maximum and/or the minimum of the effective potential
 % depending on the type of black hole and field paramaters
 function z = findMaxMins(handles)
-%     type = handles.blackHoleType;
-%     m = handles.blackHoleMass;
-%     J = handles.BHangularMomentum;
-%     L = handles.particleAngularMomentum;
-%     E = handles.plotEnergy;
-%     K = handles.isMassive;
+    type = handles.blackHoleType;
+    m = handles.blackHoleMass;
+    J = handles.BHangularMomentum;
+    L = handles.particleAngularMomentum;
+    E = handles.plotEnergy;
+    K = handles.isMassive;
 
-    type = 0;
-    m = 1;
-    J = 1;
-    L = 1;
-    E = 1;
-    K = 1;
-    
     if type == 0
         z = L^2/m;
     elseif type == 1
-        potRoots = roots([m, -L^2, 3*m*L^2]);
+        potRoots = roots([K*m, -L^2, 3*m*L^2]);
         z = [];
         for n = 1:length(potRoots)
             if imag(potRoots(n)) == 0
