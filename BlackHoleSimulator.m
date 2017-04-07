@@ -257,7 +257,8 @@ figure(1)
                                        handles.energy, ...
                                        handles.particleMatrix(i, 4), ...
                                        handles.particleMatrix(i, 1), ...
-                                       30000, 0.03, 1);
+                                       handles.particleMatrix(i, 9), ...
+                                       handles.particleMatrix(i, 10), 1);
             if ~isempty(time)
                 polarplot(angle,radius);%Display data
                 hold on
@@ -359,12 +360,12 @@ function DemoOrbit2_Callback(hObject, eventdata, handles)
 handles.particleMatrix(handles.particleIndex, 1) = 1;
 handles.particleMatrix(handles.particleIndex, 2) = 1;
 handles.particleMatrix(handles.particleIndex, 3) = 1;
-handles.particleMatrix(handles.particleIndex, 4) = 3;
+handles.particleMatrix(handles.particleIndex, 4) = 4.2;
 handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
-handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
-handles.particleMatrix(handles.particleIndex, 8) = 46;
-handles.particleMatrix(handles.particleIndex, 9) = 50000;
+handles.particleMatrix(handles.particleIndex, 6) = (((1)^2)-1)/2;
+handles.particleMatrix(handles.particleIndex, 7) = 40;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 20000;
 handles.particleMatrix(handles.particleIndex, 10) = 0.03;
 
 handles.data(handles.particleIndex, 1) = {'yes'};
@@ -613,16 +614,18 @@ function DemoOrbit3_Callback(hObject, eventdata, handles)
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
 handles.particleMatrix(handles.particleIndex, 1) = 1;
-handles.particleMatrix(handles.particleIndex, 2) = 1;
-handles.particleMatrix(handles.particleIndex, 3) = 0.5;
-handles.particleMatrix(handles.particleIndex, 4) = 3;
+handles.particleMatrix(handles.particleIndex, 2) = 0;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = 1;
 handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
-handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
-handles.particleMatrix(handles.particleIndex, 8) = 46;
+handles.particleMatrix(handles.particleIndex, 6) = 1;
+handles.particleMatrix(handles.particleIndex, 7) = 1;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 30000;
+handles.particleMatrix(handles.particleIndex, 10) = 0.01;
 
 handles.data(handles.particleIndex, 1) = {'yes'};
-handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
+handles.data(handles.particleIndex, 2) = {'Newtonian'};
 handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
 handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
 handles.data(handles.particleIndex, 5) = {'yes'};
@@ -641,23 +644,51 @@ function DemoOrbit5_Callback(hObject, eventdata, handles)
 
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-handles.particleMatrix(handles.particleIndex, 1) = 1;
-handles.particleMatrix(handles.particleIndex, 2) = 1;
-handles.particleMatrix(handles.particleIndex, 3) = 0.5;
-handles.particleMatrix(handles.particleIndex, 4) = 3;
-handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
-handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
-handles.particleMatrix(handles.particleIndex, 8) = 46;
+handles.particleMatrix(1, 1) = 1;
+handles.particleMatrix(1, 2) = 2;
+handles.particleMatrix(1, 3) = 1;
+handles.particleMatrix(1, 4) = 4;
+handles.particleMatrix(1, 5) = 1;
+handles.particleMatrix(1, 6) = (((1.001)^2)-1)/2;
+handles.particleMatrix(1, 7) = 9.606;
+handles.particleMatrix(1, 8) = 0.05;
+handles.particleMatrix(1, 9) = 7000;
+handles.particleMatrix(1, 10) = 0.08;
 
-handles.data(handles.particleIndex, 1) = {'yes'};
-handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
-handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
-handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
-handles.data(handles.particleIndex, 5) = {'yes'};
-handles.data(handles.particleIndex, 6) = {handles.particleMatrix(handles.particleIndex, 6)};
-handles.data(handles.particleIndex, 7) = {handles.particleMatrix(handles.particleIndex, 7)};
-handles.data(handles.particleIndex, 8) = {handles.particleMatrix(handles.particleIndex, 8)};
+handles.data(1, 1) = {'yes'};
+handles.data(1, 2) = {'Kerr'};
+handles.data(1, 3) = {handles.particleMatrix(1, 3)};
+handles.data(1, 4) = {handles.particleMatrix(1, 4)};
+handles.data(1, 5) = {'yes'};
+handles.data(1, 6) = {handles.particleMatrix(1, 6)};
+handles.data(1, 7) = {handles.particleMatrix(1, 7)};
+handles.data(1, 8) = {handles.particleMatrix(1, 8)};
+set(handles.listOfParticles,'Data',handles.data)
+
+handles.particleMatrix(2, 1) = 1;
+handles.particleMatrix(2, 2) = 2;
+handles.particleMatrix(2, 3) = 1;
+handles.particleMatrix(2, 4) = 4;
+handles.particleMatrix(2, 5) = 1;
+handles.particleMatrix(2, 6) = (((1.001)^2)-1)/2;
+handles.particleMatrix(2, 7) = 9.606;
+handles.particleMatrix(2, 8) = -0.05;
+handles.particleMatrix(2, 9) = 7000;
+handles.particleMatrix(2, 10) = 0.08;
+
+handles.data(2, 1) = {'yes'};
+handles.data(2, 2) = {'Kerr'};
+handles.data(2, 3) = {handles.particleMatrix(2, 3)};
+handles.data(2, 4) = {handles.particleMatrix(2, 4)};
+handles.data(2, 5) = {'yes'};
+handles.data(2, 6) = {handles.particleMatrix(2, 6)};
+handles.data(2, 7) = {handles.particleMatrix(2, 7)};
+handles.data(2, 8) = {handles.particleMatrix(2, 8)};
+
+handles.particleMatrix(3, 5) = 0;
+handles.particleMatrix(4, 5) = 0;
+handles.particleMatrix(5, 5) = 0;
+handles.particleMatrix(6, 5) = 0;
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
@@ -671,16 +702,18 @@ function DemoOrbit4_Callback(hObject, eventdata, handles)
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
 handles.particleMatrix(handles.particleIndex, 1) = 1;
-handles.particleMatrix(handles.particleIndex, 2) = 1;
-handles.particleMatrix(handles.particleIndex, 3) = 0.5;
-handles.particleMatrix(handles.particleIndex, 4) = 3;
+handles.particleMatrix(handles.particleIndex, 2) = 0;
+handles.particleMatrix(handles.particleIndex, 3) = 1;
+handles.particleMatrix(handles.particleIndex, 4) = sqrt(120);
 handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = 0.1956;
-handles.particleMatrix(handles.particleIndex, 7) = 4.3033;
-handles.particleMatrix(handles.particleIndex, 8) = 46;
+handles.particleMatrix(handles.particleIndex, 6) = 0.55;
+handles.particleMatrix(handles.particleIndex, 7) = 10;
+handles.particleMatrix(handles.particleIndex, 8) = 0;
+handles.particleMatrix(handles.particleIndex, 9) = 30000;
+handles.particleMatrix(handles.particleIndex, 10) = 0.01;
 
 handles.data(handles.particleIndex, 1) = {'yes'};
-handles.data(handles.particleIndex, 2) = {'Schwarzschild'};
+handles.data(handles.particleIndex, 2) = {'Newtonian'};
 handles.data(handles.particleIndex, 3) = {handles.particleMatrix(handles.particleIndex, 3)};
 handles.data(handles.particleIndex, 4) = {handles.particleMatrix(handles.particleIndex, 4)};
 handles.data(handles.particleIndex, 5) = {'yes'};
@@ -699,7 +732,7 @@ function DemoOrbit6_Callback(hObject, eventdata, handles)
 
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
-handles.particleMatrix(1, 1) = 1;
+handles.particleMatrix(handles.particleIndex, 1) = 1;
 handles.particleMatrix(handles.particleIndex, 2) = 1;
 handles.particleMatrix(handles.particleIndex, 3) = 1;
 handles.particleMatrix(handles.particleIndex, 4) = 4;
@@ -732,12 +765,12 @@ function DemoOrbit1_Callback(hObject, eventdata, handles)
 handles.particleMatrix(handles.particleIndex, 1) = 1;
 handles.particleMatrix(handles.particleIndex, 2) = 1;
 handles.particleMatrix(handles.particleIndex, 3) = 1;
-handles.particleMatrix(handles.particleIndex, 4) = 4;
+handles.particleMatrix(handles.particleIndex, 4) = 80;
 handles.particleMatrix(handles.particleIndex, 5) = 1;
-handles.particleMatrix(handles.particleIndex, 6) = -0.0214;
-handles.particleMatrix(handles.particleIndex, 7) = 9.606;
+handles.particleMatrix(handles.particleIndex, 6) = (((7)^2)-1)/2;
+handles.particleMatrix(handles.particleIndex, 7) = 50;
 handles.particleMatrix(handles.particleIndex, 8) = 0;
-handles.particleMatrix(handles.particleIndex, 9) = 50000;
+handles.particleMatrix(handles.particleIndex, 9) = 700;
 handles.particleMatrix(handles.particleIndex, 10) = 0.03;
 
 handles.data(handles.particleIndex, 1) = {'yes'};
