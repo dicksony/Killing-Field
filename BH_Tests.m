@@ -1,5 +1,24 @@
 %%Tests for the BH function
 
+%%JAYMY UZE MII
+R = 9.606; %Particle Initial radius
+E = 0.5; %Particle Initial Energy
+L = 4.2; %Particle angular momentum
+Type = 0; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = -0.1; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 1000; %Length of returned coordinate arrays
+time_step = 0.08;
+MASSIVE = 0;
+ingoing = 1;
+
+[radius, angle, time] = BH(Type,BH_Ang,BH_Mass,R,E,L,MASSIVE,SIZE,time_step,ingoing);
+
+if ~isempty(time)
+    polarplot(angle,radius); %Display data
+    hold on
+end
+
 R = 9.606; %Particle Initial radius
 E = 0.5; %Particle Initial Energy
 L = 4.2; %Particle angular momentum
@@ -15,7 +34,47 @@ ingoing = 1;
 
 if ~isempty(time)
     polarplot(angle,radius); %Display data
+    hold on
 end
+
+R = 9.606; %Particle Initial radius
+E = 0.5; %Particle Initial Energy
+L = 5; %Particle angular momentum
+Type = 2; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = 0.01; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 1000; %Length of returned coordinate arrays
+time_step = 0.08;
+MASSIVE = 0;
+ingoing = 1;
+
+[radius, angle, time] = BH(Type,BH_Ang,BH_Mass,R,E,L,MASSIVE,SIZE,time_step,ingoing);
+
+if ~isempty(time)
+    polarplot(angle,radius); %Display data
+    hold on
+end
+
+%%STANDARD TESTS
+%{
+R = 9.606; %Particle Initial radius
+E = 1.001; %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 2; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = 0.05; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 7000; %Length of returned coordinate arrays
+time_step = 0.08;
+MASSIVE = 1;
+ingoing = 1;
+
+[radius, angle, time] = BH(Type,BH_Ang,BH_Mass,R,E,L,MASSIVE,SIZE,time_step,ingoing);
+
+if ~isempty(time)
+    polarplot(angle,radius); %Display data
+end
+
+%}
 
 %%Good Newtonian orbit Demo, elliptic
 %{
