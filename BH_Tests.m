@@ -2,12 +2,12 @@
 
 R = 9.606; %Particle Initial radius
 E = sqrt(2*(-0.0214)+1); %Particle Initial Energy
-L = 4; %Particle angular momentum
-Type = 1; % 0-Newton/1-Schwarz/2-Kerr
-BH_Ang = 0; %Black Hole Angular Momentum
+L = 4.2; %Particle angular momentum
+Type = 2; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = -0.1; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
-SIZE = 50000; %Length of returned coordinate arrays
-time_step = 0.03;
+SIZE = 10000; %Length of returned coordinate arrays
+time_step = 0.08;
 MASSIVE = 1;
 ingoing = 1;
 
@@ -110,7 +110,35 @@ Type = 1; % 0-Newton/1-Schwarz/2-Kerr
 BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
 SIZE = 50000; %Length of returned coordinate arrays
-time_step = 0.03;
+time_step = 0.08;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Kerr Counter-rotation Demo
+%{
+R = 9.606; %Particle Initial radius
+E = 1.001; %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 2; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = 0.05; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 7000; %Length of returned coordinate arrays
+time_step = 0.08;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Kerr Direct comparison with above, co-rotation
+%{
+R = 9.606; %Particle Initial radius
+E = 1.001; %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 2; % 0-Newton/1-Schwarz/2-Kerr
+BH_Ang = -0.05; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 7000; %Length of returned coordinate arrays
+time_step = 0.08;
 MASSIVE = 1;
 ingoing = 1;
 %}
