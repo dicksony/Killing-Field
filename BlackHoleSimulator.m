@@ -23,7 +23,7 @@ function varargout = BlackHoleSimulator(varargin)
 
 % Edit the above text to modify the response to help BlackHoleSimulator
 
-% Last Modified by GUIDE v2.5 06-Apr-2017 22:45:12
+% Last Modified by GUIDE v2.5 07-Apr-2017 08:45:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,7 +57,7 @@ function BlackHoleSimulator_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 handles.isMassive = 0;
 handles.isAnimated = 0;
-handles.particleAngularMomentum = 2;
+handles.particleAngularMomentum = 4;
 handles.BHangularMomentum = 0.5;
 handles.CIRCULAR_ORBIT_POTENTIAL = 9;
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = 7;
