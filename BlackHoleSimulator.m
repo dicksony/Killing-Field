@@ -71,6 +71,7 @@ handles.blackHoleType = 1; % Enumeration
 handles.particleIndex = 6; % keeps track of which particle is selected
 handles.plotRadialDistance = 0;
 handles.plotEnergy = 1;
+handles.energy = 0;
 %store values in particleMatrix for each particle:
 %in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
 %flag, 6 potential, 7 radial distance, 8 black hole angular momentum
@@ -236,11 +237,20 @@ else
     figure(1)
     for i = 1:6
         if handles.particleMatrix(i, 5) == 1
+            if handles.particleMatrix(i, 2) == 1 %if Swarzchild
+                if handles.particleMatrix(i, 1) == 1 %if massive
+                    handles.energy = sqrt(handles.particleMatrix(i, 6)*2 +1);
+                else
+                    handles.energy = sqrt(handles.particleMatrix(i, 6)*2);
+                end
+            else
+                handles.energy = handles.particleMatrix(i, 6);
+            end    
             [radius, angle, time] = BH(handles.particleMatrix(i, 2), ...
                                        handles.particleMatrix(i, 8), ...
                                        handles.particleMatrix(i, 3), ...
                                        handles.particleMatrix(i, 7), ...
-                                       handles.particleMatrix(i, 6), ...
+                                       handles.energy, ...
                                        handles.particleMatrix(i, 4), ...
                                        handles.particleMatrix(i, 1), ...
                                        30000, 0.03, 1);
