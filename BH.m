@@ -30,8 +30,6 @@ pos_t = zeros(1,POSITION_ARRAY_SIZE);
 pos_phi = zeros(1,POSITION_ARRAY_SIZE);
 
 if BH_Type == 1
-    %%TODO: Account for falling into BH, Currently get imaginary values and
-    %%Generally screwy behavior. Whoopsie
     
     %Check for valid energy/Angular momentum values
     if (P_E^2 - (1-2*BH_M/pos_r(1))*(1+P_L^2/pos_r(1)^2)) < 0
@@ -174,8 +172,3 @@ elseif BH_Type == 0
 elseif BH_Type == 2
     %Stuff
 end
-
-%fplot(@(z) -(1-2*BH_M/z)*(1+P_L^2/z^2))
-
-%polarplot(pos_phi,pos_r); %Display final data
-
