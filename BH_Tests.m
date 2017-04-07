@@ -1,8 +1,8 @@
 %%Tests for the BH function
 
-R = 40; %Particle Initial radius
+R = 10; %Particle Initial radius
 E = 1; %Particle Initial Energy
-L = 8; %Particle angular momentum
+L = 1; %Particle angular momentum
 Type = 1; % 0-Newton/1-Scwarz/2-Kerr
 BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
