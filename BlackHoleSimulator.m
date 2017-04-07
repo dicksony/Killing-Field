@@ -343,7 +343,7 @@ set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
     if handles.blackHoleType == 2
-        updatePlotEnergy(handles);
+        updateEnergyPlot(handles);
     end 
 % Hints: get(hObject,'String') returns contents of txtBHAngularMomentum as text
 %        str2double(get(hObject,'String')) returns contents of txtBHAngularMomentum as a double
@@ -542,26 +542,24 @@ function updateEnergyPlot(handles)
     set(handles.sliderRadialDistance, 'min', rmin);
     set(handles.sliderRadialDistance, 'max', rmax);
     if sliderRad < rmin || sliderRad > rmax
-        set(handles.sliderRadialDistance, 'Value', rmax);
+        set(handles.sliderRadialDistance, 'Value', rmax)
+        handles.plotRadialDistance = get(handles.sliderRadialDistance, 'Value');
     end
     
     Ueff = getPotential(handles, radDist);
     Emin = min(Ueff)-.1;
-    Emax = max(Ueff)*1.2;
-    if Emax < .1
-        Emax = .5;
-    end
-    if handles.plotEnergy > Emax
-        handles.plotEnergy = Emax;
-    elseif handles.plotEnergy < Emin
-        handles.plotEnergy = Emin;
+    Emax = max(Ueff)+.1;
+    if Emax < .05
+        Emax = .05;
     end
     sliderE = get(handles.sliderEnergy, 'Value');
     set(handles.sliderEnergy, 'min', Emin);
     set(handles.sliderEnergy, 'max', Emax);
-    if sliderE < Emin || sliderE > Emax
-        set(handles.sliderEnergy, 'Value', Emax);
+    minPot = getPotential(handles, [handles.plotRadialDistance]);
+    if sliderE < minPot || sliderE > Emax
+        set(handles.sliderEnergy, 'Value', minPot);
     end
+    handles.plotEnergy = get(handles.sliderEnergy,'Value');
     
     plot(handles.plotRadialDistance, handles.plotEnergy, 'ro');
     hold on;
