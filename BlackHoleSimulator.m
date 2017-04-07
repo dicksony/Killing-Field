@@ -285,7 +285,7 @@ handles.data(handles.particleIndex, 3) = {handles.blackHoleMass};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
-updateEnergyPlot();
+updateEnergyPlot(handles);
 
 % --- Executes during object creation, after setting all properties.
 function txtBlackHoleMass_CreateFcn(hObject, eventdata, handles)
@@ -507,6 +507,8 @@ function updateEnergyPlot(handles)
     end
     if handles.plotEnergy > Emax
         handles.plotEnergy = Emax;
+    elseif handles.plotEnergy < Emin
+        handles.plotEnergy = Emin;
     end
     sliderE = get(handles.sliderEnergy, 'Value');
     set(handles.sliderEnergy, 'min', Emin);
