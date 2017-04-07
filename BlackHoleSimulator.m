@@ -358,6 +358,15 @@ handles.blackHoleMass = particleMatrix(handles.particleIndex, 3);
 handles.particleAngularMomentum = particleMatrix(handles.particleIndex, 4);
 handles.CIRCULAR_ORBIT_RADIAL_DISTANCE = handles.particleAngularMomentum + handles.blackHoleMass; %function of angular momentum, mass etc.
 handles.CIRCULAR_ORBIT_POTENTIAL= handles.particleAngularMomentum + handles.blackHoleMass;%function of angular momentum, mass etc.
+%in order: 1 mass, 2 black hole type, 3 black hole mass, 4 particle angular momentum, 5 plot
+%flag, 6 potential, 7 radial distance, 8 black hole angular momentum
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
+particleMatrix(handles.particleIndex, 3)
 
 handles.particleMatrix(handles.particleIndex, 6) = handles.CIRCULAR_ORBIT_POTENTIAL ;
 handles.data(handles.particleIndex, 6) = {handles.CIRCULAR_ORBIT_POTENTIAL};
