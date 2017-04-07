@@ -306,8 +306,8 @@ function txtBHAngularMomentum_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of txtBHAngularMomentum as text
 %        str2double(get(hObject,'String')) returns contents of txtBHAngularMomentum as a double
 handles.BHAngularMomentum = str2double(get(hObject,'String'));
-handles.particleMatrix(handles.particleIndex, 8) = handles.particleAngularMomentum ;
-handles.data(handles.particleIndex, 8) = {handles.particleAngularMomentum};
+handles.particleMatrix(handles.particleIndex, 8) = handles.BHAngularMomentum ;
+handles.data(handles.particleIndex, 8) = {handles.BHAngularMomentum};
 set(handles.listOfParticles,'Data',handles.data)
 guidata(hObject, handles);
 
