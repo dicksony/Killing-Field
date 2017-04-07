@@ -1,13 +1,13 @@
 %%Tests for the BH function
 
-R = 1; %Particle Initial radius
+R = 40; %Particle Initial radius
 E = 1; %Particle Initial Energy
-L = 1; %Particle angular momentum
-Type = 0; % 0-Newton/1-Scwarz/2-Kerr
+L = 8; %Particle angular momentum
+Type = 1; % 0-Newton/1-Scwarz/2-Kerr
 BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
-SIZE = 30000; %Length of returned coordinate arrays
-time_step = 0.01;
+SIZE = 20000; %Length of returned coordinate arrays
+time_step = 0.03;
 MASSIVE = 1;
 ingoing = 1;
 
@@ -41,6 +41,62 @@ BH_Ang = 0; %Black Hole Angular Momentum
 BH_Mass = 1; %Black Hole Mass
 SIZE = 30000; %Length of returned coordinate arrays
 time_step = 0.01;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Hilarious Newtonian Ellipse
+%{
+R = 10; %Particle Initial radius
+E = 0; %Particle Initial Energy
+L = 1.4; %Particle angular momentum
+Type = 0; % 0-Newton/1-Scwarz/2-Kerr
+BH_Ang = 0; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 30000; %Length of returned coordinate arrays
+time_step = 0.03;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Schwarzchild massive particle deflection
+%{
+R = 50; %Particle Initial radius
+E = 7; %Particle Initial Energy
+L = 80; %Particle angular momentum
+Type = 1; % 0-Newton/1-Scwarz/2-Kerr
+BH_Ang = 0; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 700; %Length of returned coordinate arrays
+time_step = 0.03;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Schwarzchild MAssive particle time contraction
+%{
+R = 40; %Particle Initial radius
+E = 1; %Particle Initial Energy
+L = 4; %Particle angular momentum
+Type = 1; % 0-Newton/1-Scwarz/2-Kerr
+BH_Ang = 0; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 25000; %Length of returned coordinate arrays
+time_step = 0.5;
+MASSIVE = 1;
+ingoing = 1;
+%}
+
+%%Schwarzschild Massive particle bowtie
+%{
+R = 40; %Particle Initial radius
+E = 1; %Particle Initial Energy
+L = 4.2; %Particle angular momentum
+Type = 1; % 0-Newton/1-Scwarz/2-Kerr
+BH_Ang = 0; %Black Hole Angular Momentum
+BH_Mass = 1; %Black Hole Mass
+SIZE = 20000; %Length of returned coordinate arrays
+time_step = 0.03;
 MASSIVE = 1;
 ingoing = 1;
 %}

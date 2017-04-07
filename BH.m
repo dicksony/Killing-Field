@@ -1,4 +1,4 @@
-
+%%TODO: FIX THE NEWTONIAN HYPERBOLIC/
 
 function [pos_r,pos_phi,pos_t] = ...
     BH(BH_Type,BH_L,BH_M,P_R,P_E,P_L,P_MASSIVE,POSITION_ARRAY_SIZE,d_tau,...
@@ -113,9 +113,6 @@ elseif BH_Type == 0
     
     eAndTheta = fsolve(F,[1 pi]);
     
-    %%This currently only works nicely for closed orbits so
-    %%fix later & account for coordinate time progression
-    pos_phi = linspace(0,sign(P_L)*2*pi,POSITION_ARRAY_SIZE);
     
     if eAndTheta(1) < 1 %Elliptic Orbit
         for i=2:POSITION_ARRAY_SIZE
@@ -125,9 +122,11 @@ elseif BH_Type == 0
         end
         return
         
-    else %Parabolic or elliptic orbit
+    else %Parabolic or hyperbolic orbit
         
-        turningPoint = fsolve(@(y) 2*P_E-P_L^2/y^2+2*BH_M/y, P_R);
+        turningPointS = roots([2*P_E,2*BH_M,-P_L^2]);
+        turningPointS(imag(turningPointS) ~= 0) = [];
+        turningPoint = max(turningPointS);
 
         for i=2:POSITION_ARRAY_SIZE
             pos_t(i) = pos_t(i-1)+d_tau;
@@ -135,8 +134,9 @@ elseif BH_Type == 0
             if ingoing_flag == 1
                 pos_r(i) = pos_r(i-1) - d_tau *... 
                     sqrt(2*P_E-P_L^2/pos_r(i-1)^2+2*BH_M/pos_r(i-1));
+                %pos_phi(i) = eAndTheta(2) + acos( 1/eAndTheta(1)* (p./pos_r(i) - 1));
                 %If less than turning point, reverse
-                if pos_r(i) < min(0,turningPoint)
+                if pos_r(i) < max(0,turningPoint)
                     pos_r(i) = pos_r(i-1);
                     ingoing_flag = 0;
                 end
@@ -144,11 +144,19 @@ elseif BH_Type == 0
             else %ingoing_flag == 0
                 pos_r(i) = pos_r(i-1) + d_tau *... 
                     sqrt(2*P_E-P_L^2/pos_r(i-1)^2+2*BH_M/pos_r(i-1));
+                %pos_phi(i) = eAndTheta(2) - acos( 1/eAndTheta(1)* (p./pos_r(i) - 1));
             end
 
         end %Done handling pos_r/t values
         
-        pos_phi = eAndTheta(2) + acos( 1/eAndTheta(1)* (p./r - 1) );
+        for i=2:POSITION_ARRAY_SIZE
+            pos_phi(i) = pos_phi(i-1) + abs(...
+                acos(1/eAndTheta(1)* (p./pos_r(i) - 1)) - ...
+                acos( 1/eAndTheta(1)* (p./pos_r(i-1) - 1) ));
+        end
+        
+        %pos_phi = eAndTheta(2) + acos( 1/eAndTheta(1)* (p./pos_r - 1) );
+        %pos_phi = acos( 1/eAndTheta(1)* (p./pos_r - 1) );
             
     end % end of elliptic orbit handling
     return
