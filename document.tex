@@ -1,0 +1,127 @@
+\documentclass[]{article}
+
+%opening
+\title{}
+\author{}
+
+\begin{document}
+
+\section{}
+
+The full explanation of general relativity requires much time and effort spent on mathematical formulation beyond the scope of this course, but many of the calculations and ideas can be demonstrated \textit{relatively} easily using the calculus of variations and graphing. Therefore, this report will focus on applying the mathematics of general relativity with only a brief introduction to the mathematics behind it. \\
+
+
+The mathematical basis of general relativity lays in differential geometry which is the study of abstract spaces which are not globally Euclidean, known as manifolds. Examples include Euclidean 3-space, the surface of a sphere or torus or even a line segment. Of course, generalizations exist in higher dimensions but easy to understand examples become difficult to come by. What is important about these manifolds is that the idea of a point, a line and a distance along such a line all can be constructed. Points are represented by a coordinate system, lines by sets of points parameterized by some value, and distances by something known as the metric. \\
+
+The metric is what is most important for our purposes of examining how particles travel through free space (space devoid of electromagnetic or other fields which would interact with our observer). A metric may be expressed familiarly as a line element as such ($ds^2$ is the metric): \\
+
+\begin{center}
+	$ds^2 = dx^2+dy^2+dz^2$ (Euclidean 3-space) \\
+	
+	$ds^2= d \theta^2 + sin^2(\theta) d \phi^2$ (Surface of a 2-sphere, similar to polar coordinates) \\
+	
+	$ds^2= dx^2$ (Line segment)
+\end{center}
+
+For relativity, we must extend the metric's capabilities to be able to handle the space-time interval of special relativity which must account for both space-like separated events and time-like separated events by allowing "negative" distances which represent time-like separations. Thus we find for the special relativistic case: \\
+
+\begin{center}
+	$ds^2 = -c^2 dt^2 + dx^2+dy^2+dz^2$ \\
+	$d \tau^2 = dt^2 - c^{-2} (dx^2+dy^2+dz^2)$ (Where $d\tau = -c \times ds$) 
+\end{center} 
+
+Where $ds$ can be thought of as infinitesimal space-like displacements and $d\tau$ can be thought of as infinitesimal time-like displacement as measured by a traveling observer. In these coordinates the 3-tuple $(x,y,z)$ represent the standard Euclidean 3-space we all know and love, while the $t$ coordinate represents the time measured by an inertial observer stationary with respect to the coordinate system. To verify these coordinates we form the simple calculation:
+
+\begin{center}
+	$d \tau^2 = dt^2 - c^{-2} (dx^2+dy^2+dz^2)$ (Divide through by $dt^2$, denote spacelike coordinates $\vec{x}$) \\
+	$\frac{d\tau}{dt}^2 = 1 - c^{-2} \frac{d\vec{x}}{dt}^2$ (Square root and take multiplicative inverse) \\
+	$\frac{dt}{d\tau} = \frac{1}{\sqrt{1- c^{-2} \frac{d\vec{x}}{dt}^2}}$
+\end{center}
+
+Noting that $\frac{d\vec{x}}{dt}$ is velocity measured by the stationary observer we have recovered our formula for the Lorenz factor, $\gamma$, which does indeed represent the time dilation factor between the static and moving observers. Thus our coordinates are verified. Furthermore, these coordinates represent what is called Minkowski spacetime. \\
+
+In general (relativity), our coordinates do not always have such nice references to Euclidean 3-space and such familiar spaces and so coordinates must be taken to be valid and just behave according to their metric. Einstein's equations govern how to generate a valid metric and form a system of non-linear partial differential equations. From these equations one can generate metrics for general systems and the ones we will be discussing are the Schwarzschild and Kerr black hole solutions, which respectively represent a non-rotating and rotating black hole. The metrics are: \\
+
+\begin{center}
+	Schwarzschild: \\
+	$ds^2 = -(1-\frac{2M}{r})dt^2 + (1-\frac{2M}{r})^-1 dr^2 + r^2(d\theta^2 + sin^2\theta d\phi^2)$ \\
+	Kerr: \\
+	$ds^2 = -(1 - \frac{2Mr}{\rho^2}) dt^2 - \frac{4Mr\alpha sin^2\theta}{\rho^2} dtd\phi + \frac{\rho^2}{\Delta}dr^2 + \rho^2 d\theta^2 + (r^2 + \alpha^2 + \frac{2Mr \alpha^2}{\rho^2}sin^2\theta )sin^2\theta d\phi^2$
+\end{center}
+
+These metrics have been expressed in geometric units where $c = 1, G = 1$ and meaningful quantities must therefore be re-attained via dimensional analysis. Furthermore, the values above represent:
+
+\begin{center}
+	$M$ is the black hole mass. \\
+	$\alpha = \frac{J}{M}$ is the black hole specific angular momentum. \\
+	$\rho^2 = r^2 + \alpha^2 cos^2 \theta$ \\
+	$\Delta = r^2 - 2Mr + \alpha^2$
+\end{center}
+
+In both coordinate systems, we see $t$ to represent the time measured by an observer at infinite distance with $r$ acting as a pseudo-radial coordinate and $\theta/\phi$ acting as pseudo-angular coordinates. \\
+
+The next step in our exploration of general relativity is to actually determine the trajectories of particles around these black holes, for which we will use an action principle modified for use in this scenario. The action must behave similarly under coordinate transformations, as the choice of an abstract mathematical set of coordinates should not have an effect on a physical system. An obvious guess for such an action would be the proper time measured between two points of the trajectory of an observer, and this turns out to be correct.
+
+\begin{center}
+	$S = \tau = \int_{\lambda_1}^{\lambda_2} 
+		\sqrt{\frac{d\tau}{d\lambda}^2 } d\lambda$
+\end{center}
+
+In this view the position of the particle is represented by the 4-tuple representing its coordinates, where each component is seen as a function of $\lambda$. To express $\frac{d\tau}{d\lambda}^2$ under the square root one may divide the metric by $d\lambda$ symbolically. An example in the Minkowski space-time, using geometric units, is:
+	
+\begin{center}
+	$\frac{d\tau}{d\lambda}^2 = \frac{dt}{d\lambda}^2 - \frac{d\vec{x}}{d\lambda}^2$
+\end{center}
+
+From which we find the solution to be of the form $t = const \times \lambda , \vec{x} = const \times \lambda$, as all coordinates are seen to be so-called ignorable coordinates. This corresponds to a free particle traveling a straight line, as we would hope for in the special relativistic picture. \\
+
+For the reader who wishes to actually carry out such calculations in the more complicated general picture, it is worth noting that one may parameterize the action by the proper time, which additionally forces the normalization of the observers velocity in space-time. This is shown for Minkowski space-time as follows:
+
+\begin{center}
+	Re-parameterization: \\
+	$S = \int_{\tau_1}^{\tau_2}
+		\sqrt{\frac{dt}{d\tau}^2 - \frac{d\vec{x}}{d\tau}^2} d\tau$ \\
+	Normalization: \\
+	$d \tau^2 = dt^2 -d\vec{x}^2$ (divide through by $d\tau^2$) \\
+	$1 = \frac{dt}{d\tau}^2 - \frac{d\vec{x}}{d\tau}^2$
+\end{center}
+
+The normalization means that the relativist need only solve for three coordinate velocities in terms of the fourth, and then they are left with the a non-linear ordinary differential equation for the fourth coordinate as a function of proper time. \\
+
+Additionally, noting that the integrand for the action is strictly positive (as imaginary values are not allowed) and comparing the variational method against that of finding extremal values for functions which are strictly positive, for which we have that the set of extremal points for the function are the same for the function squared. Roughly equivalently, we will find the same values of particle trajectories if we were to take the integrand squared, thus eliminating the square root sign for easier manipulation:
+
+\begin{center}
+	$S = \int_{\tau_1}^{\tau_2} \frac{dx^\alpha}{d\tau}^2 d\tau$
+\end{center}
+
+\noindent
+Where $\frac{dx^\alpha}{d\tau}^2$ represents the coordinate differentiation with respect to $d\tau$ as was seen in the example with the Minkowski space-time above which would become:
+
+\begin{center}
+	$S = \int_{\tau_1}^{\tau_2}
+	\frac{dt}{d\tau}^2 - \frac{d\vec{x}}{d\tau}^2 d\tau$ \\
+\end{center}
+
+Using the tools we have developed so far we may begin working on the Schwarzschild and Kerr solution particle trajectories (with restriction to the equatorial plane, $\theta = \frac{\pi}{2}$) by finding conserved quantities and applying the normalization condition. This will yield (with the dot accent representing differentiation with respect to proper time $\tau$):
+
+\begin{center}
+	\textbf{Schwarzschild}: \\
+	Conserved Quantities: \\
+	$E = (1-\frac{2M}{r}) \dot{t}$ (Can be thought of as specific energy) \\
+	$L = r^2 \dot{\phi}$ (Can be thought of as specific angular momentum) \\
+	Normalization Condition: \\
+	$\dot{r}^2 = E^2 - 1 + \frac{2M}{r} - \frac{L^2}{r^2} + \frac{2ML^2}{r^3} $
+\end{center}
+
+\begin{center}
+	\textbf{Kerr}: \\
+	Conserved Quantities: \\
+	$E = (1-\frac{2Mr}{\rho^2}) \dot{t} + \frac{2M\alpha r}{\rho^2}\dot{\phi}$\\
+	$L = -\frac{2M\alpha r}{\rho^2}\dot{t} + \frac{(r^2 + \alpha^2)^2 - \Delta\alpha^2}{\rho^2} \dot{\phi}$
+	Normalization Condition: \\
+	$\dot{r}^2 = \frac{2M}{r} - \frac{L^2}{r^2} + (E^2-1)(1+\frac{\alpha^2}{r^2}) +\frac{2M}{r^3}(L-\alpha E)^2$
+\end{center}
+
+By using these expressions for conserved quantities and radial differential equations one can generate the particle trajectories using any integrator of their choosing which may not be exact but will at least represent the particles behavior in accordance with the conserved quantities of the system.
+
+\end{document}
